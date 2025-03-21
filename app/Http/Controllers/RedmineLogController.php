@@ -18,13 +18,15 @@ class RedmineLogController extends Controller
 
     public function fetchLogTime()
     {
-        $today = date('Y-m-d');
+        $today = request()->get('date') ?? date('Y-m-d');
         $data = $this->redmineService->getUserTasks($today);
 
         foreach ($data as $key => &$tasks) {
-            $tasks = array_filter($tasks, function ($task) {
-                return strpos($task['task'], 'Daily_meeting') === false;
-            });
+            if (is_array($tasks)) {
+                $tasks = array_filter($tasks, function ($task) {
+                    return strpos($task['task'], 'Daily_meeting') === false;
+                });
+            }
             if (empty($tasks)) {
                 unset($data[$key]);
             }
