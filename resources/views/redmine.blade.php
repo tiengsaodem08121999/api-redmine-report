@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redmine Log Report</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-50">
+@extends('layout')
+@section('content')
     <div class="min-h-screen">
         <!-- Header -->
         <header class="bg-white shadow-sm">
@@ -49,7 +42,8 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @php
-                                        $index = 1;
+                                        $index1 = 1;
+                                        $index2 = 1;
                                         $splus = 'Splus.';
                                         $developers = [
                                             'VinhDV', 'DuyTT', 'QuyLV', 'KietNA', 'HaiLT',
@@ -58,7 +52,7 @@
                                     @endphp
                                     @foreach ($developers as $dev)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index1 }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $splus }}{{ $dev }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-500">
                                                 @foreach ($data as $key => $tasks)
@@ -92,7 +86,7 @@
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-500">.</td>
                                         </tr>
-                                        @php $index++; @endphp
+                                        @php $index1++; @endphp
                                     @endforeach
                                 </tbody>
                             </table>
@@ -106,14 +100,14 @@
 
 
 @foreach ($developers as $dev)
-    {!! '| ' . $index . ' |'. $splus . $dev .'| ' !!}
+    {!! '| ' . $index2  . ' |'. $splus . $dev .'| ' !!}
     @foreach ($data as $key =>  $tasks)
         @if ($key == $dev)
             @foreach ($tasks as $task)
                 @php
                     $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
                 @endphp
-                {!! $taskContent  !!} <br>
+                {!! $taskContent  !!} 
             @endforeach
         @endif
     @endforeach
@@ -126,13 +120,11 @@
                     $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
                     $taskStatus = $Status == 'Closed' || $Status == 'Resolved' ? '完了' : '進行中';
                 @endphp
-                {!! $taskStatus  !!} <br>
+                {!! $taskStatus  !!}
             @endforeach
         @endif
     @endforeach
     {!!'|. |<br>'  !!}
-    @php $index++; @endphp
+    @php $index2++; @endphp
 @endforeach
-
-</body>
-</html>
+@endsection

@@ -35,7 +35,11 @@ class RedmineLogController extends Controller
         return view('redmine', compact('data'));
     }
 
-    public function clearDataLogtime($data) {
-       
+    public function fetchTimeSheet(Request $request) {
+        $date = $request->get('date');
+        $projectId = $request->get('project_id');   
+        $dailyReportListWithMonth = $this->redmineService->getDailyReports($date, $projectId);
+        $project = $this->redmineService->getProject();
+        return view('timesheet', compact('dailyReportListWithMonth', 'project'));
     }
 }
