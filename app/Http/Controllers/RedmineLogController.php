@@ -40,6 +40,7 @@ class RedmineLogController extends Controller
         $projectId = $request->get('project_id');   
         $dailyReportListWithMonth = $this->redmineService->getDailyReports($date, $projectId);
         $project = $this->redmineService->getProject();
-        return view('timesheet', compact('dailyReportListWithMonth', 'project'));
+        $userNotLogTime = $this->redmineService->getUserNotLogTime($dailyReportListWithMonth);
+        return view('timesheet', compact('dailyReportListWithMonth', 'project', 'userNotLogTime'));
     }
 }

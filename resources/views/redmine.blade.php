@@ -2,26 +2,34 @@
 @section('content')
     <div class="min-h-screen">
         <!-- Header -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-white">
             <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-semibold text-gray-900">Redmine Log Report</h1>
-                    <form action="{{ route('redmine') }}" method="get" class="flex items-center space-x-4">
-                        <input type="date" 
-                               name="date" 
-                               value="{{ request()->get('date') ?? date('Y-m-d') }}"
-                               class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <button type="submit" 
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Submit
-                        </button>
+                    <form action="{{ route('redmine') }}" method="get" class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="date" 
+                                name="date" 
+                                value="{{ request()->get('date') ?? date('Y-m-d') }}"
+                                class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Submit
+                                </button>
+                                <a href="{{ route('timesheet') }}" class="btn btn-primary">
+                                    Check Time Sheet
+                                </a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main class="">
             <!-- Part 1: Modern Table -->
             <div class="px-4 py-6 sm:px-0">
                 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -30,7 +38,7 @@
                     </div>
                     <div class="border-t border-gray-200">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>

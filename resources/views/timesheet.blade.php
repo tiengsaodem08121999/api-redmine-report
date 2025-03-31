@@ -1,6 +1,5 @@
 @extends('layout')
 @section('content')
-@dd($dailyReportListWithMonth)
     <div class="min-h-screen">
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="container mx-auto">
@@ -11,11 +10,20 @@
                     <select name="project_id">
                         @foreach ($project['projects'] as $project)
                             <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
-                        @endforeach
+       r                 @endforeach
                     </select>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
+            @foreach ($userNotLogTime as $day => $user)
+                @if($user)
+                    <span class="text-sm text-gray-500"><b>  {{ $day }} </b> </span> <br>
+                    @foreach ($user as $name => $tasks)
+                            <span class="text-sm text-gray-500"> {{ $name }} </span> <br>
+
+                    @endforeach
+                @endif
+            @endforeach
         </main>
     </div>  
 @endsection

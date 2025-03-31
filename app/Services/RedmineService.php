@@ -123,48 +123,34 @@ class RedmineService
             foreach($data as $issue) {
                 $member[$issue['start_date']] = $this->TaskDailyReport($issue);
             }
-            dd($member);
-            return $data;
+            return $member;
         }
 
         return response()->json(['error' => 'Failed to fetch reports'], 500);
     }
     function TaskDailyReport($issue) {
-        $description = $issue['description'];
-        $data = [];
-        
-        // Split the description into lines
-        $lines = explode("\n", $description);
-        
-        // Find the table section
-        $tableStart = false;
+    
+        $lines = explode("\r\n", $issue['description']);
+        $tasks = [];
+        $currentDev = '';
+
         foreach ($lines as $line) {
-            if (strpos($line, '|_. # |_. 開発者 |_. ID タスク') !== false) {
-                $tableStart = true;
-                continue;
+            if (preg_match('/\|\s*\d+\s*\|\s*(Splus\.\w+)/', $line, $matches)) {
+                $currentDev = $matches[1];
+                $tasks[$currentDev] = [];
             }
-            
-            if ($tableStart) {
-                // Skip empty lines and table header
-                if (empty(trim($line)) || strpos($line, '|_.') !== false) {
+
+            if (preg_match('/(Task|Bug|Q&A)\s*#(\d+)/', $line, $matches)) {
+                if ($currentDev) {
+                    $tasks[$currentDev][] = (int) $matches[2];
                     continue;
                 }
-                
-                // Parse table row
-                $columns = array_map('trim', explode('|', $line));
-                if (count($columns) >= 5) { // Ensure we have enough columns
-                    $developer = $columns[2]; // Get developer name
-                    // Extract task ID using regex
-                    if (preg_match('/#(\d+)/', $columns[3], $matches)) {
-                        if (!isset($data[$developer])) {
-                            $data[$developer] = [];
-                        }
-                        $data[$developer][] = $matches[1];
-                    }
-                }
+            }
+            if (preg_match_all('/#(\d+)/', $line, $matches)) {
+                $tasks[$currentDev][] = (int) $matches[1][0];
             }
         }
-        return $data;
+        return $tasks;
     }
 
     public function getProject() {
@@ -173,4 +159,44 @@ class RedmineService
         ]);
         return json_decode($response->getBody()->getContents(), true);
     }
+
+    public function getUserNotLogTime($dailyReportListWithMonth) {
+        $userNotLogTime = [];
+        foreach($dailyReportListWithMonth as $day => $dailyReport) {
+            $logTime = [];
+            $spentTime = $this->fetchTimeEntries($day);
+            foreach($spentTime['time_entries'] as $time) {
+                if ($time['activity']['name'] != '10_Meeting') {
+                    $name = 'Splus.'. $time['user']['name'];
+                    $logTime[$name][] = $time['issue']['id'];
+                }
+            }  
+            $user = $this->getUniqueUsersAndIds($dailyReport, $logTime);
+            $userNotLogTime[$day] = $user;
+        }
+        return $userNotLogTime;
+    }
+
+   
+    function getUniqueUsersAndIds($array1, $array2) {
+        $uniqueUsers = [];
+    
+        // Lấy tất cả user từ cả hai mảng
+        $allUsers = array_unique(array_merge(array_keys($array1), array_keys($array2)));
+    
+        foreach ($allUsers as $user) {
+            $ids1 = $array1[$user] ?? []; // Lấy danh sách ID từ mảng 1 (nếu có)
+            $ids2 = $array2[$user] ?? []; // Lấy danh sách ID từ mảng 2 (nếu có)
+    
+            // Lấy các ID chỉ xuất hiện ở một trong hai mảng
+            $uniqueIds = array_diff($ids1, $ids2) + array_diff($ids2, $ids1);
+    
+            if (!empty($uniqueIds)) {
+                $uniqueUsers[$user] = array_values($uniqueIds);
+            }
+        }
+        return $uniqueUsers;
+    }
+    
+          
 }

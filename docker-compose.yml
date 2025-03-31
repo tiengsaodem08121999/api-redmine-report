@@ -47,7 +47,7 @@ services:
     container_name: redmine-api-nginx
     restart: unless-stopped
     ports:
-      - "8081:80"
+      - "8083:80"
     volumes:
       - ./:/var/www
       - ./docker/nginx:/etc/nginx/conf.d
