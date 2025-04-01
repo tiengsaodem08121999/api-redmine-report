@@ -10,9 +10,10 @@
                     <select name="project_id">
                         @foreach ($project['projects'] as $project)
                             <option value="{{ $project['id'] }}">{{ $project['name'] }}</option>
-       r                 @endforeach
+                        @endforeach
                     </select>
                     <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="{{ route('redmine') }}" class="btn btn-primary">Rerport</a>
                 </form>
             </div>
         

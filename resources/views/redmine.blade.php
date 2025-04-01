@@ -54,8 +54,8 @@
                                         $index2 = 1;
                                         $splus = 'Splus.';
                                         $developers = [
-                                            'VinhDV', 'DuyTT', 'QuyLV', 'KietNA', 'HaiLT',
-                                            'DuongNT', 'ChuongNPN', 'PhuDT', 'YenNH', 'ThienND'
+                                            'VinhDV', 'QuyLV', 'KietNA',
+                                            'DuongNT', 'PhuDT', 'YenNH',
                                         ];
                                     @endphp
                                     @foreach ($developers as $dev)
@@ -115,7 +115,7 @@
                 @php
                     $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
                 @endphp
-                {!! $taskContent  !!} 
+                {!! $taskContent  !!}   <br>
             @endforeach
         @endif
     @endforeach
@@ -128,7 +128,7 @@
                     $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
                     $taskStatus = $Status == 'Closed' || $Status == 'Resolved' ? '完了' : '進行中';
                 @endphp
-                {!! $taskStatus  !!}
+                {!! $taskStatus  !!} <br>
             @endforeach
         @endif
     @endforeach
