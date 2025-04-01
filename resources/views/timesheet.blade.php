@@ -15,6 +15,7 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
+        
             @foreach ($userNotLogTime as $day => $user)
                 @if($user)
                     <span class="text-sm text-gray-500"><b>  {{ $day }} </b> </span> <br>

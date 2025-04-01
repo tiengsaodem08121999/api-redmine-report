@@ -108,8 +108,8 @@ class RedmineService
             'tracker_id' => 8,
             'limit' => 100,
         ]);
-    
         if ($response->successful()) {
+            $data = [];
             foreach ($response->json()['issues'] as $issue) {
                 if($issue['tracker']['name'] === 'Report' && str_contains($issue['subject'], '日報')) {
                     $start_date = Carbon::parse($issue['start_date']);
@@ -119,9 +119,13 @@ class RedmineService
                     }
                 }
             }
+
             $member = [];
-            foreach($data as $issue) {
-                $member[$issue['start_date']] = $this->TaskDailyReport($issue);
+
+            if($data) {
+                foreach($data as $issue) {
+                    $member[$issue['start_date']] = $this->TaskDailyReport($issue);
+                }
             }
             return $member;
         }
@@ -155,7 +159,7 @@ class RedmineService
 
     public function getProject() {
         $response = $this->client->request('GET', "{$this->apiUrl}/projects.json", [
-            'query' => ['key' => $this->apiKey]
+            'query' => ['key' => $this->apiKey],
         ]);
         return json_decode($response->getBody()->getContents(), true);
     }
