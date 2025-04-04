@@ -32,7 +32,6 @@ class RedmineService
                     'key' => $this->apiKey
                 ]
             ]);
-
             return json_decode($response->getBody()->getContents(), true);
         } catch (\Exception $e) {
             Log::error("Redmine API Error: " . $e->getMessage());
@@ -88,6 +87,7 @@ class RedmineService
             $groupedTasks[$user][] = [
                 'task' => $taskFormatted,
                 'status' => $taskName['status'],
+                'spent_time' => $entry['hours'],
             ];
         }
         return $groupedTasks;

@@ -38,14 +38,14 @@
                     </div>
                     <div class="border-t border-gray-200">
                         <div class="overflow-x-auto">
-                            <table class="">
+                            <table class="table">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">開発者</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID タスク</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ステータス</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">備考</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID task </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Spent Time</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -79,20 +79,39 @@
                                                     @if ($key == $dev)
                                                         @foreach ($tasks as $task)
                                                             @php
+                                                                $color = [
+                                                                    'Closed' => 'success',
+                                                                    'Resolved' => 'success',
+                                                                    'New' => 'danger',
+                                                                    'In Progress' => 'primary',
+                                                                    'Pending' => 'warning',
+                                                                ];
                                                                 $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
-                                                                $taskStatus = $Status == 'Closed' || $Status == 'Resolved' ? '完了' : '進行中';
-                                                                $statusColor = $taskStatus == '完了' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                                                                $statusColor = $Status == 'New' ? 'danger' : 'primary';
                                                             @endphp
                                                             <div class="mb-1">
-                                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColor }}">
-                                                                    {{ $taskStatus }}
+                                                                <span class="text-{{ $color[$Status] }}">
+                                                                    {{ $Status }}
                                                                 </span>
                                                             </div>
                                                         @endforeach
                                                     @endif
                                                 @endforeach
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500">.</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500"> 
+                                                @foreach ($data as $key => $tasks)
+                                                @if ($key == $dev)
+                                                    @php $spent_time = 0; @endphp
+                                                        @foreach ($tasks as $task)
+                                                            @php
+                                                                $spent_time += $task['spent_time'];
+                                                            @endphp
+                                                        
+                                                        @endforeach
+                                                        {{$spent_time}}
+                                                    @endif
+                                            @endforeach
+                                            </td>
                                         </tr>
                                         @php $index1++; @endphp
                                     @endforeach
