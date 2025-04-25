@@ -18,8 +18,8 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-search me-2"></i>Submit
                                 </button>
-                                <a href="{{ route('timesheet') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-clock-history me-2"></i>Check Time Sheet
+                                <a href="{{ route('pcv') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-clock-history me-2"></i>Check PCV
                                 </a>
                             </div>
                         </form>
