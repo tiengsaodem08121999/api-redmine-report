@@ -28,5 +28,10 @@ COPY . .
 # Install dependencies
 RUN composer install
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 
+# Create necessary directories and set permissions
+RUN mkdir -p /var/www/storage/framework/{sessions,views,cache} && \
+    mkdir -p /var/www/storage/logs && \
+    chown -R www-data:www-data /var/www/storage && \
+    chmod -R 775 /var/www/storage && \
+    chown -R www-data:www-data /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/bootstrap/cache 

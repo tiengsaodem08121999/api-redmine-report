@@ -17,7 +17,7 @@ class RedmineService
     {
         $this->client = new Client();
         $this->apiUrl = "https://tools.splus-software.com/redmine";
-        $this->apiKey = env('REDMINE_API_KEY'); // Đặt API Key trong file .env
+        $this->apiKey = "261a83492179548e45039abffc8f67434922744b"; // Đặt API Key trong file .env
     }
 
     /**

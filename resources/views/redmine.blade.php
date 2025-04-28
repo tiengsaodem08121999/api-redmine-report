@@ -54,7 +54,7 @@
                                     $index2 = 1;
                                     $splus = 'Splus.';
                                     $developers = [
-                                        'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH',
+                                        'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH','ThienND','ChuongNPN', 'MinhTL', 'HaiLT' 
                                     ];
                                 @endphp
                                 @foreach ($developers as $dev)
