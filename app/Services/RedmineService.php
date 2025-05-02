@@ -12,12 +12,14 @@ class RedmineService
     protected $client;
     protected $apiUrl;
     protected $apiKey;
+    protected $project;
 
     public function __construct()
     {
         $this->client = new Client();
         $this->apiUrl = "https://tools.splus-software.com/redmine";
-        $this->apiKey = "261a83492179548e45039abffc8f67434922744b"; // Đặt API Key trong file .env
+        $this->apiKey = "261a83492179548e45039abffc8f67434922744b";
+        $this->project = 's7-ec-cube';
     }
 
     /**
@@ -91,5 +93,94 @@ class RedmineService
             ];
         }
         return $groupedTasks;
+    }
+    public function checkPCV()
+    {
+        $today = Carbon::today()->toDateString();
+        $statuses = ['New', 'In Progress', 'Feedback'];
+    
+        $response = Http::get("{$this->apiUrl}/issues.json", [
+            'project_id' => $this->project,
+            'status_id' => '*',
+            'limit' => 100,
+            'key' => $this->apiKey,
+        ]);
+    
+        if (!$response->successful()) {
+            return [];
+        }
+    
+        $issues = $response->json('issues') ?? [];
+        $lateIssues = [];
+    
+        foreach ($issues as $issue) {
+            $startDate = $issue['start_date'] ?? null;
+            $dueDate = $issue['due_date'] ?? null;
+            $status = $issue['status']['name'] ?? null;
+            $tracker = $issue['tracker']['name'] ?? null;
+    
+            if (
+                $startDate && $startDate <= $today &&
+                $dueDate && $dueDate <= $today &&
+                in_array($status, $statuses) &&
+                $tracker !== 'Report'
+            ) {
+                $lateIssues[] = $issue['id'];
+            }
+        }
+    
+        return $lateIssues;
+    }
+    
+    public function updateIssues(array $ids)
+    {
+        $today = Carbon::today();
+        $futureDate = $today->copy()->addDays(2);
+
+        // Nếu rơi vào thứ 7 hoặc Chủ nhật thì chỉnh thành thứ 2 tuần sau
+        if ($futureDate->isWeekend()) {
+            $futureDate->next(Carbon::MONDAY);
+        }
+
+        $dueDate = $futureDate->toDateString();
+
+        foreach ($ids as $id) {
+            // Lấy thông tin hiện tại của issue để kiểm tra status
+            $response = Http::get("{$this->apiUrl}/issues/{$id}.json", [
+                'key' => $this->apiKey,
+            ]);
+
+            if (!$response->successful()) {
+                // Ghi log hoặc tiếp tục tùy ý
+                continue;
+            }
+
+            $issue = $response->json('issue');
+            $currentStatus = $issue['status']['name'] ?? null;
+
+            // Nếu đang là "New", thì chuyển sang "In Progress" (giả sử ID = 2 là In Progress)
+            $statusId = null;
+            if ($currentStatus === 'New') {
+                $statusId = 2; // Bạn cần xác định ID thật của status "In Progress" trong hệ thống Redmine
+            }
+
+            $payload = [
+                'issue' => [
+                    'due_date' => $dueDate,
+                ],
+            ];
+
+            if ($statusId) {
+                $payload['issue']['status_id'] = $statusId;
+            }
+
+            // Gửi yêu cầu cập nhật
+            Http::put("{$this->apiUrl}/issues/{$id}.json", $payload + ['key' => $this->apiKey]);
+        }
+
+        return response()->json([
+            'message' => 'Cập nhật thành công!',
+            'due_date_set' => $dueDate,
+        ]);
     }
 }
