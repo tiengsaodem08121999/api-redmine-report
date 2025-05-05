@@ -179,7 +179,7 @@ class RedmineService
         }
 
         return response()->json([
-            'message' => 'Cập nhật thành công!',
+            'message' => 'Update due date successfully!',
             'due_date_set' => $dueDate,
         ]);
     }
