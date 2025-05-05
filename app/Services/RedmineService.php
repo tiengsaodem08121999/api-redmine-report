@@ -143,10 +143,10 @@ class RedmineService
         }
 
         $dueDate = $futureDate->toDateString();
-
-        foreach ($ids as $id) {
-            // Lấy thông tin hiện tại của issue để kiểm tra status
-            $response = Http::get("{$this->apiUrl}/issues/{$id}.json", [
+        try {
+            foreach ($ids as $id) {
+                // Lấy thông tin hiện tại của issue để kiểm tra status
+                $response = Http::get("{$this->apiUrl}/issues/{$id}.json", [
                 'key' => $this->apiKey,
             ]);
 
@@ -175,7 +175,14 @@ class RedmineService
             }
 
             // Gửi yêu cầu cập nhật
-            Http::put("{$this->apiUrl}/issues/{$id}.json", $payload + ['key' => $this->apiKey]);
+                Http::put("{$this->apiUrl}/issues/{$id}.json", $payload + ['key' => $this->apiKey]);
+            }
+        } catch (\Exception $e) {
+            Log::error("Lỗi khi cập nhật due date: " . $e->getMessage());
+            return response()->json([
+                'message' => 'Lỗi khi cập nhật due date: ' . $e->getMessage(),
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return response()->json([
