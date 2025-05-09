@@ -9,6 +9,12 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <h1 class="h3 mb-3 mb-md-0">Redmine Log Report</h1>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-primary">
+                                Logout
+                            </button>
+                        </form>
                         <form action="{{ route('redmine') }}" method="get" class="d-flex gap-3 flex-wrap">
                             <input type="date" 
                                 name="date" 
@@ -18,9 +24,6 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-search me-2"></i>Submit
                                 </button>
-                                <a href="{{ route('pcv') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-clock-history me-2"></i>Check PCV
-                                </a>
                             </div>
                         </form>
                     </div>

@@ -34,14 +34,4 @@ class RedmineLogController extends Controller
 
         return view('redmine', compact('data'));
     }
-
-    public function fetchPCV() {
-        $taskIds = $this->redmineService->checkPCV();
-        $result = $this->redmineService->updateIssues($taskIds)->getData();
-        
-        if ($result->error) {
-            return back()->with("error", $result->message);
-        }
-        return back()->with("success", $result->message);
-    }
 }
