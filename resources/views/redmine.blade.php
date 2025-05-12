@@ -2,36 +2,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <h1 class="h3 mb-3 mb-md-0">Redmine Log Report</h1>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-primary">
-                                Logout
-                            </button>
-                        </form>
-                        <form action="{{ route('redmine') }}" method="get" class="d-flex gap-3 flex-wrap">
-                            <input type="date" 
-                                name="date" 
-                                value="{{ request()->get('date') ?? date('Y-m-d') }}"
-                                class="form-control">
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search me-2"></i>Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="row">
         <div class="col-12">
