@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
 
-use function PHPUnit\Framework\returnValueMap;
-
 class RedmineLogController extends Controller
 {
     protected $redmineService;
@@ -33,5 +31,31 @@ class RedmineLogController extends Controller
         }
 
         return view('redmine', compact('data'));
+    }
+
+    public function executeReport(Request $request)
+    {
+        $today = date('Y-m-d');
+        $data = $this->redmineService->getUserTasks($today);
+
+        // Filter out daily meeting tasks
+        foreach ($data as $key => &$tasks) {
+            if (is_array($tasks)) {
+                $tasks = array_filter($tasks, function ($task) {
+                    return strpos($task['task'], 'Daily_meeting') === false;
+                });
+            }
+            if (empty($tasks)) {
+                unset($data[$key]);
+            }
+        }
+
+        $result = $this->redmineService->createDailyReport($data);
+
+        if (isset($result['error'])) {
+            return redirect()->route('redmine')->with('error', $result['error']);
+        }
+
+        return redirect()->route('redmine')->with('success', 'Báo cáo đã được tạo thành công trên Redmine');
     }
 }

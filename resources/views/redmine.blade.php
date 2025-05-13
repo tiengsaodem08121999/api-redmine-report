@@ -89,14 +89,18 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>  
+            </div>
+            <div class="card-footer text-end">
+                <form action="{{ route('executeReport') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">Create Report</button>
+                </form>
             </div>
         </div>
     </div>
 
     {!! '|_. # |_. 開発者 |_. ID タスク |_. ステータス |_. 備考 |<br>' !!}
-
-
     @foreach ($developers as $dev)
         {!! '| ' . $index2  . ' |'. $splus . $dev .'| ' !!}
         @foreach ($data as $key =>  $tasks)

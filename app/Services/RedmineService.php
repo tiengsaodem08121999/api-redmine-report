@@ -94,4 +94,108 @@ class RedmineService
         }
         return $groupedTasks;
     }
+
+    public function executeReport($request)
+    {
+        $date = $request['date'];
+        $data = $this->getUserTasks($date);
+        return $data;
+    }
+
+    public function createDailyReport($data)
+    {
+        try {
+            $today = date('Y-m-d');
+            $subject = '日報　' . date('Y年n月j日');
+            
+            // Format the description
+            $description = "*1.【定量報告】*\n\n";
+            
+            // Front section
+            $description .= "* Front\n";
+            $description .= "** CR/Overlooked: Done/Total: 34/34\n";
+            $description .= "** Bug: Fixed/Total: 27/28\n";
+            $description .= "** Pending: 1\n\n";
+            
+            // EC section
+            $description .= "* EC\n";
+            $description .= "** CR/Overlooked: Done/Total:99/100\n";
+            $description .= "** Bug: Fixed/Total: 33/33\n\n";
+            
+            // API section
+            $description .= "* API\n";
+            $description .= "** CR/Overlooked: Done/Total:4/4\n";
+            $description .= "** Bug: Fixed/Total: 0/0\n\n";
+            
+            // Today's tasks section
+            $description .= "*2.【本日のタスク】*\n\n";
+            $description .= $this->formatTasksTable($data) . "\n\n";
+            
+            // Notices section
+            $description .= "*3.【連絡事項】*\n\n";
+            $description .= "* 「MR Status」列でステータスが「Merged」となっている「Issue」について、正確に対応済みかどうかご確認のほどよろしくお願いします。\n";
+            $description .= "\"EC-Admin - UAT - IssuesList - レビュー - Google Sheets\":https://docs.google.com/spreadsheets/d/1ey0D5r4XX3mmtOP5EaHts2M09fcoDj9nKegqkfCne0s/edit?gid=0#gid=0\n";
+            $response = $this->client->request('POST', "{$this->apiUrl}/issues.json", [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'X-Redmine-API-Key' => $this->apiKey
+                ],
+                'json' => [
+                    'issue' => [
+                        'project_id' => $this->project,
+                        'subject' => $subject,
+                        'status_id' => 1, // New status
+                        'tracker_id' => 8, // Report
+                        'start_date' => $today,
+                        'due_date' => $today,
+                        'description' => $description,
+                        'assigned_to_id' => 758 // DuongNT
+                    ]
+                ]
+            ]);
+
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (\Exception $e) {
+            Log::error("Redmine API Error: " . $e->getMessage());
+            return ['error' => 'Không thể tạo báo cáo trên Redmine'];
+        }
+    }
+
+    private function formatTasksTable($data)
+    {
+        $table = "|_. # |_. 開発者 |_. ID タスク |_. ステータス |_. 備考 |\n";
+        $index = 1;
+        $splus = 'Splus.';
+        $developers = [
+            'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH','ThienND','ChuongNPN', 'BaoNC', 'DuyTT', 'NganPVH'
+        ];
+
+        foreach ($developers as $dev) {
+            $table .= "| {$index} |{$splus}{$dev}| ";
+            
+            // Add tasks
+            if (isset($data[$dev])) {
+                foreach ($data[$dev] as $task) {
+                    $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
+                    $table .= $taskContent . "\n";
+                }
+            }
+            
+            $table .= "| ";
+            
+            // Add statuses
+            if (isset($data[$dev])) {
+                foreach ($data[$dev] as $task) {
+                    $status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
+                    $taskStatus = $status == 'Closed' || $status == 'Resolved' ? '完了' : '進行中';
+                    $table .= $taskStatus . "\n";
+                }
+            }
+            
+            $table .= "|. |\n";
+            $index++;
+        }
+
+        return $table;
+    }
 }

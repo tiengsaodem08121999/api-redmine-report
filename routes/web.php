@@ -11,5 +11,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [RedmineLogController::class, 'fetchLogTime'])->name('redmine');
-    Route::post('/', [RedmineLogController::class, 'executeTask']);
+    Route::post('/executeReport', [RedmineLogController::class, 'executeReport'])->name('executeReport');
 });
