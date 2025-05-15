@@ -20,21 +20,8 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" data-bs-toggle="modal" data-bs-target="#logTimeModal1" href="#">Logtime</a>
               </li>
-                {{-- <li class="nav-item">
-                    <form action="{{ route('redmine') }}" method="get" class="d-flex gap-3 flex-wrap">
-                        <input type="date" 
-                            name="date" 
-                            value="{{ request()->get('date') ?? date('Y-m-d') }}"
-                            class="form-control">
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search me-2"></i>Submit
-                            </button>
-                        </div>
-                    </form>
-                </li> --}}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Dropdown
@@ -84,6 +71,11 @@
             toastr.error("{{ $value }}");
         @endsession
       
+        function confirmSubmit(formId) {
+            if (confirm("Are you sure you want to create a report?")) {
+                document.getElementById(formId).submit();
+            }
+        }
     </script>
 </body>
 </html>

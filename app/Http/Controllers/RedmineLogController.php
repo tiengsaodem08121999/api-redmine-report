@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LogTimeRequest;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
 
@@ -55,7 +56,16 @@ class RedmineLogController extends Controller
         if (isset($result['error'])) {
             return redirect()->route('redmine')->with('error', $result['error']);
         }
+        return redirect()->route('redmine')->with('success', 'Báo cáo đã được tạo thành công trên Redmine')
+                ->with('report_id', $result['issue']['id']);            
+    }
 
-        return redirect()->route('redmine')->with('success', 'Báo cáo đã được tạo thành công trên Redmine');
+    public function LogTime(LogTimeRequest $request)
+    {
+       $result = $this->redmineService->logTimeToRedmine($request->all());
+        if (isset($result['error'])) {
+            return redirect()->route('redmine')->with('error', $result['error']);
+        }
+        return redirect()->route('redmine')->with('success', 'Log time đã được thực hiện thành công trên Redmine');
     }
 }

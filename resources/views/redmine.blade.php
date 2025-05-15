@@ -2,6 +2,9 @@
 
 @section('content')
 <div class="container-fluid">
+    @include('component.modal_confirm_create_report')
+    @include('component.modal_log_time')
+    </div>
     <!-- Main Content -->
     <div class="row">
         <div class="col-12">
@@ -91,11 +94,14 @@
                     </div>
                 </div>  
             </div>
-            <div class="card-footer text-end">
-                <form action="{{ route('executeReport') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-primary">Create Report</button>
-                </form>
+            <div class="card-footer text-end">    
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#comfirmCreateReportModal">
+                    Create Report
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#logTimeModal1">
+                    Log Time
+                </button>
             </div>
         </div>
     </div>

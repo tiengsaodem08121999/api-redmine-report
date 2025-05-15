@@ -153,7 +153,9 @@ class RedmineService
                     ]
                 ]
             ]);
-
+            if ($response->getStatusCode() !== 201) {
+                return ['error' => 'Không thể tạo báo cáo trên Redmine'];
+            }
             return json_decode($response->getBody()->getContents(), true);
         } catch (\Exception $e) {
             Log::error("Redmine API Error: " . $e->getMessage());
@@ -197,5 +199,29 @@ class RedmineService
         }
 
         return $table;
+    }
+
+    function logTimeToRedmine(array $data)
+    {   
+        $redmineUrl = $this->apiUrl; 
+        $apiKey =  $data['key']; 
+
+        $response = Http::withHeaders([
+            'X-Redmine-API-Key' => $apiKey,
+            'Content-Type' => 'application/json',
+        ])->post("$redmineUrl/time_entries.json", [
+            'time_entry' => [
+                'issue_id'    => (int) $data['task_id'],
+                'hours'       => $data['spent_time'],
+                'spent_on'    => Carbon::now()->format('Y-m-d'),
+                'activity_id' => $data['activity_id'],
+            ]
+        ]);
+
+        if ($response->failed()) {
+            throw new \Exception('Failed to log time to Redmine: ' . $response->body());
+        }
+
+        return $response->json();
     }
 }
