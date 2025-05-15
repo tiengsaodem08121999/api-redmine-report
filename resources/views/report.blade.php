@@ -32,7 +32,9 @@
                                     $developers = [
                                         'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH','ThienND','ChuongNPN', 'BaoNC', 'DuyTT', 'NganPVH'
                                     ];
+                                    $isDone = true;
                                 @endphp
+
                                 @foreach ($developers as $dev)
                                     <tr>
                                         <td>{{ $index1 }}</td>
@@ -43,6 +45,7 @@
                                                     @foreach ($tasks as $task)
                                                         @php
                                                             $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
+
                                                         @endphp
                                                         <div class="mb-1 text-break">{{ $taskContent }}</div>
                                                     @endforeach
@@ -96,11 +99,8 @@
             </div>
             <div class="card-footer text-end">    
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#comfirmCreateReportModal">
+                <button type="button" class="btn btn-{{$isDone ?  'success' : 'danger'}}" data-bs-toggle="modal" data-bs-target="#comfirmCreateReportModal">
                     Create Report
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#logTimeModal1">
-                    Log Time
                 </button>
             </div>
         </div>

@@ -31,7 +31,7 @@ class RedmineLogController extends Controller
             }
         }
 
-        return view('redmine', compact('data'));
+        return view('report', compact('data'));
     }
 
     public function executeReport(Request $request)
@@ -54,18 +54,28 @@ class RedmineLogController extends Controller
         $result = $this->redmineService->createDailyReport($data);
 
         if (isset($result['error'])) {
-            return redirect()->route('redmine')->with('error', $result['error']);
+            return redirect()->route('report')->with('error', $result['error']);
         }
-        return redirect()->route('redmine')->with('success', 'Báo cáo đã được tạo thành công trên Redmine')
+        return redirect()->route('report')->with('success', 'Báo cáo đã được tạo thành công trên Redmine')
                 ->with('report_id', $result['issue']['id']);            
     }
 
-    public function LogTime(LogTimeRequest $request)
+    public function LogTime(Request $request)
     {
        $result = $this->redmineService->logTimeToRedmine($request->all());
         if (isset($result['error'])) {
-            return redirect()->route('redmine')->with('error', $result['error']);
+            return redirect()->route('report')->with('error', $result['error']);
         }
-        return redirect()->route('redmine')->with('success', 'Log time đã được thực hiện thành công trên Redmine');
+        return redirect()->route('report')->with('success', 'Log time đã được thực hiện thành công trên Redmine');
+    }
+
+    public function createTask()
+    {
+        return view('create_task');
+    }
+
+    public function executeCreateTask(Request $request) 
+    {
+       
     }
 }
