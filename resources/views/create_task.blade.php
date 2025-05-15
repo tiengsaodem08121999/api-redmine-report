@@ -23,9 +23,9 @@
                         </td>
                         <td>
                             <select name="tracker" class="form-select" aria-label="Default select example">
-                                <option value="1">Bug</option>
-                                <option value="2">Feature</option>
-                                <option value="3">Task</option>
+                                @foreach (config('information.tracker') as $name =>  $id)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
                             </select>   
                         </td>
                         <td>
@@ -35,13 +35,13 @@
                             <textarea name="description" class="form-control" placeholder="Description"></textarea>
                         </td>
                         <td>
-                            <input type="text" name="sub_task">
+                            <input type="text" name="sub_task" class="form-control" placeholder="Sub task">
                         </td>
                         <td>
                             <select name="assignee" class="form-select" aria-label="Default select example">
-                                <option value="1">User 1</option>
-                                <option value="2">User 2</option>
-                                <option value="3">User 3</option>
+                                @foreach (config('information.assignee') as $name =>  $id)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
                             </select>
                         </td>
                         <td>
