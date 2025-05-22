@@ -50,8 +50,7 @@ class RedmineLogController extends Controller
                 unset($data[$key]);
             }
         }
-
-        $result = $this->redmineService->createDailyReport($data);
+        $result = $this->redmineService->createDailyReport($data , $request->all());
 
         if (isset($result['error'])) {
             return redirect()->route('report')->with('error', $result['error']);

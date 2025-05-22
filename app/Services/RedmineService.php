@@ -102,7 +102,7 @@ class RedmineService
         return $data;
     }
 
-    public function createDailyReport($data)
+    public function createDailyReport($data, $request)
     {
         try {
             $today = date('Y-m-d');
@@ -113,19 +113,19 @@ class RedmineService
             
             // Front section
             $description .= "* Front\n";
-            $description .= "** CR/Overlooked: Done/Total: 34/34\n";
-            $description .= "** Bug: Fixed/Total: 27/28\n";
+            $description .= "** CR/Overlooked: Done/Total: {$request['cr_font']}\n";
+            $description .= "** Bug: Fixed/Total: {$request['bug_font']}\n";
             $description .= "** Pending: 1\n\n";
             
             // EC section
             $description .= "* EC\n";
-            $description .= "** CR/Overlooked: Done/Total:99/100\n";
-            $description .= "** Bug: Fixed/Total: 33/33\n\n";
+            $description .= "** CR/Overlooked: Done/Total: {$request['cr_cms']}\n";
+            $description .= "** Bug: Fixed/Total: {$request['bug_cms']}\n\n";
             
             // API section
             $description .= "* API\n";
-            $description .= "** CR/Overlooked: Done/Total:4/4\n";
-            $description .= "** Bug: Fixed/Total: 0/0\n\n";
+            $description .= "** CR/Overlooked: Done/Total: {$request['cr_api']}\n";
+            $description .= "** Bug: Fixed/Total: {$request['bug_api']}\n\n";
             
             // Today's tasks section
             $description .= "*2.【本日のタスク】*\n\n";
