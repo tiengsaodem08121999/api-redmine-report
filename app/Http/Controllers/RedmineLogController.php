@@ -75,6 +75,35 @@ class RedmineLogController extends Controller
 
     public function executeCreateTask(Request $request) 
     {
-       
+        $data = $this->formatDataCreateTask($request->all());
+        $result = $this->redmineService->createTasks($data);
+        if (isset($result['error'])) {
+            return redirect()->route('create_task')->with('error', $result['error']);
+        }
+        return redirect()->route('create_task')->with('success', 'Task đã được tạo thành công trên Redmine');
+    }
+
+    public function formatDataCreateTask($data)
+    {
+        $tasks = [];
+        $count = count($data['subject']);
+        
+        for ($i = 0; $i < $count; $i++) {
+
+            $subTask = $data['sub_task'][$i];
+    
+            if (is_numeric($subTask)) {
+                $subTask = (int) $subTask;
+            }
+
+            $tasks[] = [
+                'tracker' => $data['tracker'][$i],
+                'subject' => $data['subject'][$i],
+                'description' => $data['description'][$i],
+                'sub_task' => $subTask,
+                'assignee' => $data['assignee'][$i],
+                ];
+        }
+        return $tasks;
     }
 }

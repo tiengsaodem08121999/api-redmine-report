@@ -22,6 +22,10 @@
                         <input type="text" class="form-control" id="task_id" name="task_id" required>
                     </div>
                     <div class="mb-3">
+                        <label for="task_id" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" value="{{ date('Y-m-d') }}" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="task_id" class="form-label">User </label>
                         <select name="key" id="" class="form-select" required>
                             @foreach ($developers as $dev => $key)

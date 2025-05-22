@@ -201,7 +201,7 @@ class RedmineService
         return $table;
     }
 
-    function logTimeToRedmine(array $data)
+    public function logTimeToRedmine(array $data)
     {   
         $redmineUrl = $this->apiUrl; 
         $apiKey =  $data['key']; 
@@ -213,7 +213,7 @@ class RedmineService
             'time_entry' => [
                 'issue_id'    => (int) $data['task_id'],
                 'hours'       => $data['spent_time'],
-                'spent_on'    => Carbon::now()->format('Y-m-d'),
+                'spent_on'    => Carbon::parse($data['date'])->format('Y-m-d'),
                 'activity_id' => $data['activity_id'],
             ]
         ]);
@@ -224,4 +224,93 @@ class RedmineService
 
         return $response->json();
     }
+
+    public function createTasks(array $data)
+    {
+        $redmineUrl = $this->apiUrl;
+        $apiKey = $this->apiKey;
+        $subTask = [];
+        foreach ($data as $key => $task) {
+            if($task['sub_task'] !== null) {
+                $subTask[] = $task;
+                continue;
+            }
+            $response = Http::withHeaders([ 
+                'X-Redmine-API-Key' => $apiKey,
+                'Content-Type' => 'application/json',
+            ])->post("$redmineUrl/issues.json", [
+                'issue' => [
+                    'project_id' => $this->project,
+                    'subject' => $task['subject'],  
+                    'tracker_id' => $task['tracker'],
+                    'description' => $task['description'],
+                    'assigned_to_id' => $task['assignee'],
+                    'due_date' => Carbon::now()->addDays(7)->format('Y-m-d'),
+                    'custom_fields' => [
+                        [
+                            'id' => 1,
+                            'value' => Carbon::now()->format('Y-m-d')
+                        ],
+                        [
+                            'id' => 2,
+                            'value' => Carbon::now()->format('Y-m-d')
+                        ]
+                    ]
+                ]
+            ]);    
+
+            if ($response->failed()) {
+                throw new \Exception('Failed to create tasks on Redmine: ' . $response->body());
+            }
+        }
+        foreach ($subTask as $key => $task) {
+            
+            if(is_numeric($task['sub_task'])) {
+                $subtask_id = $task['sub_task'];
+            } else {
+                $subtask_id = $this->getTaskforSubject($task['sub_task']);
+            }
+            
+            $response = Http::withHeaders([ 
+                'X-Redmine-API-Key' => $apiKey,
+                'Content-Type' => 'application/json',
+            ])->post("$redmineUrl/issues.json", [
+                'issue' => [
+                    'project_id' => $this->project,
+                    'subject' => $task['subject'],  
+                    'tracker_id' => $task['tracker'],
+                    'description' => $task['description'],
+                    'assigned_to_id' => $task['assignee'],
+                    'parent_issue_id' => $subtask_id,
+                    'due_date' => Carbon::now()->addDays(7)->format('Y-m-d'),
+                    'custom_fields' => [
+                        [
+                            'id' => 1,
+                            'value' => Carbon::now()->format('Y-m-d')
+                        ],
+                        [
+                            'id' => 2,
+                            'value' => Carbon::now()->format('Y-m-d')
+                        ]
+                    ]
+                ]
+            ]);
+        }
+        return $response->json();
+    }
+
+    public function getTaskforSubject($subject)
+    {
+        
+        $response = Http::withHeaders([
+            'X-Redmine-API-Key' => $this->apiKey,
+        ])->get("$this->apiUrl/issues.json", [
+            'project_id' => $this->project,
+            'subject' => $subject,
+        ]);
+        $subject = $response->json()['issues'][0]['subject'];
+        $id = $response->json()['issues'][0]['id'];
+        return $id;
+    }
+    
 }
