@@ -244,6 +244,7 @@ class RedmineService
                     'subject' => $task['subject'],  
                     'tracker_id' => $task['tracker'],
                     'description' => $task['description'],
+                    'status_id' => 2,
                     'assigned_to_id' => $task['assignee'],
                     'due_date' => Carbon::now()->addDays(7)->format('Y-m-d'),
                     'custom_fields' => [
@@ -253,7 +254,7 @@ class RedmineService
                         ],
                         [
                             'id' => 2,
-                            'value' => Carbon::now()->format('Y-m-d')
+                            'value' => Carbon::now()->addDays(7)->format('Y-m-d')
                         ]
                     ]
                 ]
@@ -282,6 +283,8 @@ class RedmineService
                     'description' => $task['description'],
                     'assigned_to_id' => $task['assignee'],
                     'parent_issue_id' => $subtask_id,
+                    'done_ratio' => 10,
+                    'status_id' => 2,
                     'due_date' => Carbon::now()->addDays(7)->format('Y-m-d'),
                     'custom_fields' => [
                         [
@@ -290,7 +293,7 @@ class RedmineService
                         ],
                         [
                             'id' => 2,
-                            'value' => Carbon::now()->format('Y-m-d')
+                            'value' => Carbon::now()->addDays(7)->format('Y-m-d')
                         ]
                     ]
                 ]
