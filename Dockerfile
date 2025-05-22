@@ -22,11 +22,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
+# Copy composer files first to leverage Docker cache
+COPY composer.json composer.lock ./
+
+# Install dependencies
+RUN composer install --no-scripts --no-autoloader
+
 # Copy existing application directory
 COPY . .
 
-# Install dependencies
-RUN composer install
+# Generate autoloader and run scripts
+RUN composer dump-autoload --optimize && \
+    composer run-script post-autoload-dump
 
 # Create necessary directories and set permissions
 RUN mkdir -p /var/www/storage/framework/{sessions,views,cache} && \

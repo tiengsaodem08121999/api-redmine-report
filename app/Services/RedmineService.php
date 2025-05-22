@@ -17,9 +17,9 @@ class RedmineService
     public function __construct()
     {
         $this->client = new Client();
-        $this->apiUrl = env('REDMINE_API_URL');
-        $this->apiKey = env('REDMINE_API_KEY');
-        $this->project = env('REDMINE_PROJECT');
+        $this->apiUrl = env('REDMINE_API_URL') ?? 'https://tools.splus-software.com/redmine';
+        $this->apiKey = env('REDMINE_API_KEY') ?? 'cac020bc0f405ab33aba64abffe5216beacf4a27';
+        $this->project = env('REDMINE_PROJECT') ?? 's7-ec-cube';
     }
 
     /**
