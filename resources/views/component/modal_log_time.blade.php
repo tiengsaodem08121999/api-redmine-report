@@ -2,8 +2,9 @@
     $developers = [
         'QuyLV'   => 'cac020bc0f405ab33aba64abffe5216beacf4a27',
         'DuongNT' => 'cad5eb98b070c1ee75330031c0e34ed4cd412eb1',
-        'KietNT'  => 'ece23009da9170c5d5edb0c1ef1095db5657f9f4',
+        'KietNA'  => 'ece23009da9170c5d5edb0c1ef1095db5657f9f4',
         'ThienND' => '81baff340b161e0c9799bfda7268c01afaed772b',
+        'NganPVH' => 'cc513ebd6bc00327f89c368199fc8fc928de8a97',
     ];
 @endphp
 <form action="{{route('logtime')}}" method="POST">
