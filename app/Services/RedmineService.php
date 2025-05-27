@@ -315,6 +315,17 @@ class RedmineService
         return $id;
     }
 
+    public function getTaskForId($id)
+    {
+        $response = Http::withHeaders([
+            'X-Redmine-API-Key' => $this->apiKey,
+        ])->get("$this->apiUrl/issues/{$id}.json");
+        if ($response->failed()) {
+            return null;
+        }
+        return $response->json();
+    }
+
     public function checkLogtimeForThisMonth()
     {
         $developerNames = array_flip(config('information.developer_report'));
@@ -366,5 +377,46 @@ class RedmineService
         }
 
         return $dates;
+    }
+
+    public function executeLogtimeForThisMonth(array $data)
+    {
+        $logtimeByDate = [];
+        $developerKey = $data['developer'];
+        unset($data['developer']);
+        foreach ($data as $date => $task) {
+            if ($task['task_id']) {
+                $logtimeByDate[$date] = [
+                    'spent_time' => $task['spent_time'],
+                    'task_id' => (int) $task['task_id'],
+                    'date' => $date,
+                    'key' => $developerKey,
+                    'activity_id' => $task['activity_id'],
+                ];
+            }
+        }
+        $taskErrors = [];
+        $taskSuccess = [];
+        if(count($logtimeByDate) == 0) {
+            return ['error' => 'Không có task được log time',
+                    'taskErrors' => $taskErrors];
+        }
+
+        foreach ($logtimeByDate as $logtime) {
+            if( ! $this->getTaskForId($logtime['task_id'])) {
+                $taskErrors[$logtime['date']] = $logtime['task_id'];
+                continue;
+            }
+            $taskSuccess[] = $logtime['task_id'];
+            $this->logTimeToRedmine($logtime);
+        }
+        if(count($taskSuccess) == 0) {
+            return ['error' => 'Không có task được log time',
+                    'taskErrors' => $taskErrors];
+        }
+        return [
+                'taskSuccess' => $taskSuccess, 
+                'taskErrors' => $taskErrors
+            ];
     }
 }

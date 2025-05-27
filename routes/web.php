@@ -16,4 +16,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/create_task', [RedmineLogController::class, 'createTask'])->name('create_task');
     Route::post('/execute_create_task', [RedmineLogController::class, 'executeCreateTask'])->name('execute_create_task');
     Route::get('/check_logtime', [RedmineLogController::class, 'checkLogtime'])->name('check_logtime');
+    Route::get('/logtime_for_this_month', [RedmineLogController::class, 'logtimeForThisMonth'])->name('logtime_for_this_month');
+    Route::post('/execute_logtime_for_this_month', [RedmineLogController::class, 'executeLogtimeForThisMonth'])->name('execute_logtime_for_this_month');
 });

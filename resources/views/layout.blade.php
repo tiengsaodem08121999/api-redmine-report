@@ -37,7 +37,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{{ route('check_logtime') }}">Check Logtime</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="{{ route('logtime_for_this_month') }}">Logtime For This Month </a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

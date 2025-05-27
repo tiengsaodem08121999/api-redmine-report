@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LogTimeRequest;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
 
@@ -111,5 +110,20 @@ class RedmineLogController extends Controller
     {
         $data = $this->redmineService->checkLogtimeForThisMonth();
         return view('check_logtime', compact('data'));
+    }
+
+    public function logtimeForThisMonth()
+    {
+        $workingThisMonth = $this->redmineService->getWorkingDaysOfThisMonth();
+        return view('logtime_for_this_month', compact('workingThisMonth'));
+    }
+
+    public function executeLogtimeForThisMonth(Request $request)
+    {
+        $data = $this->redmineService->executeLogtimeForThisMonth($request->except('_token'));
+        if (isset($data['error'])) {
+            return redirect()->route('logtime_for_this_month')->with('error', $data['error'])->with('taskErrors', $data['taskErrors']);
+        }
+        return redirect()->route('logtime_for_this_month')->with('taskSuccess',  $data['taskSuccess'] )->with('taskErrors', $data['taskErrors']);
     }
 }
