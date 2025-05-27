@@ -29,9 +29,7 @@
                                     $index1 = 1;
                                     $index2 = 1;
                                     $splus = 'Splus.';
-                                    $developers = [
-                                        'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH','ThienND','ChuongNPN', 'BaoNC', 'DuyTT', 'NganPVH'
-                                    ];
+                                    $developers = config('information.developer_report');
                                     $isDone = true;
                                 @endphp
 

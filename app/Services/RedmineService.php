@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Carbon\CarbonPeriod;
 
 class RedmineService
 {
@@ -51,11 +52,11 @@ class RedmineService
                 'query' => ['key' => $this->apiKey]
             ]);
             $data = json_decode($response->getBody()->getContents(), true);
-    
+
             $subject = $data['issue']['subject'] ?? 'Không có tiêu đề';
             $tracker = $data['issue']['tracker']['name'] ?? 'Không có tracker';
             $status = $data['issue']['status']['name'] ?? 'Không có status';
-    
+
             return [
                 'id' => $taskId,
                 'subject' => $subject,
@@ -85,7 +86,7 @@ class RedmineService
             $user = $entry['user']['name'];
             $taskId = $entry['issue']['id'];
             $taskName = $this->fetchTaskDetail($taskId);
-            $taskFormatted = $taskName['tracker'] . ' #' . $taskName['id'] . ' :'  . $taskName['subject'] . ' ' ;
+            $taskFormatted = $taskName['tracker'] . ' #' . $taskName['id'] . ' :'  . $taskName['subject'] . ' ';
             $groupedTasks[$user][] = [
                 'task' => $taskFormatted,
                 'status' => $taskName['status'],
@@ -107,30 +108,30 @@ class RedmineService
         try {
             $today = date('Y-m-d');
             $subject = '日報　' . date('Y年n月j日');
-            
+
             // Format the description
             $description = "*1.【定量報告】*\n\n";
-            
+
             // Front section
             $description .= "* Front\n";
             $description .= "** CR/Overlooked: Done/Total: {$request['cr_font']}\n";
             $description .= "** Bug: Fixed/Total: {$request['bug_font']}\n";
             $description .= "** Pending: 1\n\n";
-            
+
             // EC section
             $description .= "* EC\n";
             $description .= "** CR/Overlooked: Done/Total: {$request['cr_cms']}\n";
             $description .= "** Bug: Fixed/Total: {$request['bug_cms']}\n\n";
-            
+
             // API section
             $description .= "* API\n";
             $description .= "** CR/Overlooked: Done/Total: {$request['cr_api']}\n";
             $description .= "** Bug: Fixed/Total: {$request['bug_api']}\n\n";
-            
+
             // Today's tasks section
             $description .= "*2.【本日のタスク】*\n\n";
             $description .= $this->formatTasksTable($data) . "\n\n";
-            
+
             // Notices section
             $description .= "*3.【連絡事項】*\n\n";
             $description .= "* 「MR Status」列でステータスが「Merged」となっている「Issue」について、正確に対応済みかどうかご確認のほどよろしくお願いします。\n";
@@ -168,13 +169,11 @@ class RedmineService
         $table = "|_. # |_. 開発者 |_. ID タスク |_. ステータス |_. 備考 |\n";
         $index = 1;
         $splus = 'Splus.';
-        $developers = [
-            'VinhDV', 'QuyLV', 'KietNA', 'DuongNT', 'PhuDT', 'YenNH','ThienND','ChuongNPN', 'BaoNC', 'DuyTT', 'NganPVH'
-        ];
+        $developers = config('information.developer_report');
 
         foreach ($developers as $dev) {
             $table .= "| {$index} |{$splus}{$dev}| ";
-            
+
             // Add tasks
             if (isset($data[$dev])) {
                 foreach ($data[$dev] as $task) {
@@ -182,9 +181,9 @@ class RedmineService
                     $table .= $taskContent . "\n";
                 }
             }
-            
+
             $table .= "| ";
-            
+
             // Add statuses
             if (isset($data[$dev])) {
                 foreach ($data[$dev] as $task) {
@@ -193,7 +192,7 @@ class RedmineService
                     $table .= $taskStatus . "\n";
                 }
             }
-            
+
             $table .= "|. |\n";
             $index++;
         }
@@ -202,9 +201,9 @@ class RedmineService
     }
 
     public function logTimeToRedmine(array $data)
-    {   
-        $redmineUrl = $this->apiUrl; 
-        $apiKey =  $data['key']; 
+    {
+        $redmineUrl = $this->apiUrl;
+        $apiKey =  $data['key'];
 
         $response = Http::withHeaders([
             'X-Redmine-API-Key' => $apiKey,
@@ -231,17 +230,17 @@ class RedmineService
         $apiKey = $this->apiKey;
         $subTask = [];
         foreach ($data as $key => $task) {
-            if($task['sub_task'] !== null) {
+            if ($task['sub_task'] !== null) {
                 $subTask[] = $task;
                 continue;
             }
-            $response = Http::withHeaders([ 
+            $response = Http::withHeaders([
                 'X-Redmine-API-Key' => $apiKey,
                 'Content-Type' => 'application/json',
             ])->post("$redmineUrl/issues.json", [
                 'issue' => [
                     'project_id' => $this->project,
-                    'subject' => $task['subject'],  
+                    'subject' => $task['subject'],
                     'tracker_id' => $task['tracker'],
                     'description' => $task['description'],
                     'status_id' => 2,
@@ -258,27 +257,27 @@ class RedmineService
                         ]
                     ]
                 ]
-            ]);    
+            ]);
 
             if ($response->failed()) {
                 throw new \Exception('Failed to create tasks on Redmine: ' . $response->body());
             }
         }
         foreach ($subTask as $key => $task) {
-            
-            if(is_numeric($task['sub_task'])) {
+
+            if (is_numeric($task['sub_task'])) {
                 $subtask_id = $task['sub_task'];
             } else {
                 $subtask_id = $this->getTaskforSubject($task['sub_task']);
             }
-            
-            $response = Http::withHeaders([ 
+
+            $response = Http::withHeaders([
                 'X-Redmine-API-Key' => $apiKey,
                 'Content-Type' => 'application/json',
             ])->post("$redmineUrl/issues.json", [
                 'issue' => [
                     'project_id' => $this->project,
-                    'subject' => $task['subject'],  
+                    'subject' => $task['subject'],
                     'tracker_id' => $task['tracker'],
                     'description' => $task['description'],
                     'assigned_to_id' => $task['assignee'],
@@ -304,7 +303,7 @@ class RedmineService
 
     public function getTaskforSubject($subject)
     {
-        
+
         $response = Http::withHeaders([
             'X-Redmine-API-Key' => $this->apiKey,
         ])->get("$this->apiUrl/issues.json", [
@@ -315,5 +314,57 @@ class RedmineService
         $id = $response->json()['issues'][0]['id'];
         return $id;
     }
-    
+
+    public function checkLogtimeForThisMonth()
+    {
+        $developerNames = array_flip(config('information.developer_report'));
+        $logtimesByDate = $this->getLogtimeForThisMonth();
+        $totalLogTime = [];
+
+        foreach ($logtimesByDate as $logtimes) {
+            foreach ($logtimes as $entry) {
+                $userName = $entry['user']['name'] ?? null;
+                $hours = $entry['hours'] ?? 0;
+
+                if ($userName && isset($developerNames[$userName])) {
+                    $totalLogTime[$userName]['total_hours'] = ($totalLogTime[$userName]['total_hours'] ?? 0) + $hours;
+                }
+            }
+        }
+
+        return $totalLogTime;
+    }
+
+    public function getLogtimeForThisMonth(): array
+    {
+        $logtimeByDate = [];
+
+        foreach ($this->getWorkingDaysOfThisMonth() as $date) {
+            $response = Http::withHeaders([
+                'X-Redmine-API-Key' => $this->apiKey,
+            ])->get("{$this->apiUrl}/time_entries.json", [
+                'spent_on'   => $date,
+                'project_id' => $this->project,
+            ]);
+
+            $logtimeByDate[$date] = $response->json()['time_entries'] ?? [];
+        }
+
+        return $logtimeByDate;
+    }
+
+    public function getWorkingDaysOfThisMonth(): array
+    {
+        $start = Carbon::now()->startOfMonth();
+        $end = Carbon::now()->endOfMonth();
+        $dates = [];
+
+        foreach (CarbonPeriod::create($start, $end) as $date) {
+            if (!$date->isWeekend()) {
+                $dates[] = $date->format('Y-m-d');
+            }
+        }
+
+        return $dates;
+    }
 }

@@ -106,4 +106,10 @@ class RedmineLogController extends Controller
         }
         return $tasks;
     }
+
+    public function checkLogtime()
+    {
+        $data = $this->redmineService->checkLogtimeForThisMonth();
+        return view('check_logtime', compact('data'));
+    }
 }
