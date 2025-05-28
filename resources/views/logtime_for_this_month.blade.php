@@ -32,18 +32,44 @@
                 @endif
             </div>
         </div>
-        <form action="{{ route('execute_logtime_for_this_month') }}" method="post">
+        <form action="{{ route('execute_logtime_for_this_month') }}" id="form_logtime" method="post">
             @csrf
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Select developer</h5>
-                            <select class="form-select" name="developer" aria-label="Default select example">
-                                @foreach (config('information.user_for_key') as $key => $value)
-                                    <option value="{{ $value }}">{{ $key }}</option>
-                                @endforeach
-                            </select>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Select member</h5>
+                                    <select class="form-select" name="developer" aria-label="Default select example">
+                                        @foreach ($developer as $item)
+                                            <option value="{{ $item->key }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Add key member</h5>
+                                    <input type="text" name="key" value="{{ old('key') }}" class="form-control @error('key') is-invalid @enderror" placeholder="Enter key">
+                                    @error('key')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    <input type="text" name="name" value="{{ old('name') }}" class="form-control mt-2 @error('name') is-invalid @enderror" placeholder="Enter name">
+                                    @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    <button type="button" class="btn btn-primary mt-2" id="add_key_developer">Add key</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,6 +183,12 @@
                 }
 
                 $(this).closest('tr').remove();
+            });
+
+            $(document).on('click', '#add_key_developer', function() {
+                $('#form_logtime').removeAttr('action');
+                $('#form_logtime').attr('action', '{{ route('add_key_developer') }}');
+                $('#form_logtime').submit();
             });
         });
     </script>

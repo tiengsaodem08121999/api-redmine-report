@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Developer;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
 
@@ -115,15 +116,29 @@ class RedmineLogController extends Controller
     public function logtimeForThisMonth()
     {
         $workingThisMonth = $this->redmineService->getWorkingDaysOfThisMonth();
-        return view('logtime_for_this_month', compact('workingThisMonth'));
+        $developer = Developer::all();
+        return view('logtime_for_this_month', compact('workingThisMonth', 'developer'));
     }
 
     public function executeLogtimeForThisMonth(Request $request)
     {
-         $data = $this->redmineService->executeLogtimeForThisMonth($request->except('_token'));
+        $data = $this->redmineService->executeLogtimeForThisMonth($request->except('_token', 'name', 'key'));
         if (isset($data['error'])) {
             return redirect()->route('logtime_for_this_month')->with('error', $data['error'])->with('taskErrors', $data['taskErrors']);
         }
         return redirect()->route('logtime_for_this_month')->with('taskSuccess',  $data['taskSuccess'] )->with('taskErrors', $data['taskErrors']);
+    }
+
+    public function addKeyDeveloper(Request $request)
+    {
+        $request->validate([
+            'key' => 'required',
+            'name' => 'required',
+        ]);
+        $result = $this->redmineService->addKeyDeveloper($request->all());
+        if (isset($result['error'])) {
+            return redirect()->route('logtime_for_this_month')->with('error', $result['error']);
+        }
+        return redirect()->route('logtime_for_this_month')->with('success', 'Key developer đã được thêm thành công');
     }
 }

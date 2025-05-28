@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Developer;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
@@ -420,5 +421,11 @@ class RedmineService
                 'taskSuccess' => $taskSuccess, 
                 'taskErrors' => $taskErrors
             ];
+    }
+
+    public function addKeyDeveloper(array $data)
+    {
+        $developer = Developer::create($data);
+        return $developer;
     }
 }
