@@ -172,28 +172,26 @@ class RedmineService
         $developers = config('information.developer_report');
 
         foreach ($developers as $dev) {
-            $table .= "| {$index} |{$splus}{$dev}| ";
+            $taskContents = [];
+            $taskStatuses = [];
 
-            // Add tasks
             if (isset($data[$dev])) {
                 foreach ($data[$dev] as $task) {
-                    $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
-                    $table .= $taskContent . "\n";
-                }
-            }
+                    // Task content
+                    $taskContent = is_array($task['task']) ? implode("\n", $task['task']) : $task['task'];
+                    $taskContents[] = $taskContent;
 
-            $table .= "| ";
-
-            // Add statuses
-            if (isset($data[$dev])) {
-                foreach ($data[$dev] as $task) {
-                    $status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
+                    // Status
+                    $status = is_array($task['status']) ? implode("\n", $task['status']) : $task['status'];
                     $taskStatus = $status == 'Closed' || $status == 'Resolved' ? '完了' : '進行中';
-                    $table .= $taskStatus . "\n";
+                    $taskStatuses[] = $taskStatus;
                 }
             }
 
-            $table .= "|. |\n";
+            $taskColumn = implode("\n", $taskContents);
+            $statusColumn = implode("\n", $taskStatuses);
+
+            $table .= "| {$index} |{$splus}{$dev}| {$taskColumn} | {$statusColumn}|. |\n";
             $index++;
         }
 

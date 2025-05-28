@@ -56,7 +56,8 @@
                                         <th width="10%">Date</th>
                                         <th width="20%">Task #Id</th>
                                         <th width="20%">Spent Time</th>
-                                        <th width="20%">Activity</th>
+                                        <th width="15%">Activity</th>
+                                        <th width="5%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,6 +90,9 @@
                                                     <option value="31">12_System Test</option>
                                                     <option value="23">99_Others</option>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <i class="fa-regular fa-square-plus" onclick="addTask({{ $date }})"></i>
                                             </td>
                                         </tr>
                                     @endforeach
