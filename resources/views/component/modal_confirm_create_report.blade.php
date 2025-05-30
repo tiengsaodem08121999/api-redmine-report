@@ -22,8 +22,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" value="34/36" name="cr_font" id="cr_font"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" value="{{ data_get($report_summary, 'cr_font', '0/0') }}" name="cr_font" id="cr_font"
                                  placeholder="CR Font">
                          </div>
                          <div class="col-md-3">
@@ -33,8 +33,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" value="28/28" name="bug_font" id="bug_font"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" value="{{ data_get($report_summary, 'bug_font', '0/0') }}" name="bug_font" id="bug_font"
                                  placeholder="Bug Font">
                          </div>
                          <div class="col-md-3">
@@ -44,8 +44,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" value="103/107" name="cr_cms" id="cr_cms"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" value="{{ data_get($report_summary, 'cr_cms', '0/0') }}" name="cr_cms" id="cr_cms"
                                  placeholder="CR CMS">
                          </div>
                          <div class="col-md-3">
@@ -55,8 +55,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" value="38/39" name="bug_cms" id="bug_cms"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" value="{{ data_get($report_summary, 'bug_cms', '0/0') }}" name="bug_cms" id="bug_cms"
                                  placeholder="Bug CMS">
                          </div>
                          <div class="col-md-3">
@@ -66,8 +66,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" name="cr_api" value="4/5" id="cr_api"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" name="cr_api" value="{{ data_get($report_summary, 'cr_api', '0/0') }}" id="cr_api"
                                  placeholder="CR API">
                          </div>
                          <div class="col-md-3">
@@ -77,8 +77,8 @@
                                  </strong>
                              </span>
                          </div>
-                         <div class="col-md-9">
-                             <input type="text" class="form-control" name="bug_api" value="0/0" id="bug_api"
+                         <div class="col-md-9 mt-1">
+                             <input type="text" class="form-control" name="bug_api" value="{{ data_get($report_summary, 'bug_api', '0/0') }}" id="bug_api"
                                  placeholder="Bug API">
                          </div>
                      </div>

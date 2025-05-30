@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ReportSummary;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
 
@@ -18,7 +19,7 @@ class RedmineLogController extends Controller
     {
         $today = request()->get('date') ?? date('Y-m-d');
         $data = $this->redmineService->getUserTasks($today);
-
+        $report_summary = ReportSummary::first();
         foreach ($data as $key => &$tasks) {
             if (is_array($tasks)) {
                 $tasks = array_filter($tasks, function ($task) {
@@ -30,11 +31,18 @@ class RedmineLogController extends Controller
             }
         }
 
-        return view('report', compact('data'));
+        return view('report', compact('data', 'report_summary'));
     }
 
     public function executeReport(Request $request)
     {
+        $report_summary = ReportSummary::first();
+        if (!$report_summary) {
+            $report_summary =  ReportSummary::create($request->except('_token'));
+        } else {
+            $report_summary->update($request->except('_token'));
+        }
+
         $today = date('Y-m-d');
         $data = $this->redmineService->getUserTasks($today);
 

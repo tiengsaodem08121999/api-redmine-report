@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     @include('component.modal_confirm_create_report')
-    @include('component.modal_log_time')
+    @include('component.modal_log_time', compact('report_summary'))
     </div>
     <!-- Main Content -->
     <div class="row">
