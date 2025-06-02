@@ -37,12 +37,12 @@ class RedmineLogController extends Controller
 
     public function executeReport(Request $request)
     {
-        $report_summary = ReportSummary::first();
-        if (!$report_summary) {
-            $report_summary =  ReportSummary::create($request->except('_token'));
-        } else {
-            $report_summary->update($request->except('_token'));
-        }
+        // $report_summary = ReportSummary::first();
+        // if (!$report_summary) {
+        //     $report_summary =  ReportSummary::create($request->except('_token'));
+        // } else {
+        //     $report_summary->update($request->except('_token'));
+        // }
 
         $today = date('Y-m-d');
         $data = $this->redmineService->getUserTasks($today);

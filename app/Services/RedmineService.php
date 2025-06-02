@@ -111,30 +111,30 @@ class RedmineService
             $subject = '日報　' . date('Y年n月j日');
 
             // Format the description
-            $description = "*1.【定量報告】*\n\n";
+            // $description = "*1.【定量報告】*\n\n";
 
-            // Front section
-            $description .= "* Front\n";
-            $description .= "** CR/Overlooked: Done/Total: {$request['cr_font']}\n";
-            $description .= "** Bug: Fixed/Total: {$request['bug_font']}\n";
-            $description .= "** Pending: 1\n\n";
+            // // Front section
+            // $description .= "* Front\n";
+            // $description .= "** CR/Overlooked: Done/Total: {$request['cr_font']}\n";
+            // $description .= "** Bug: Fixed/Total: {$request['bug_font']}\n";
+            // $description .= "** Pending: 1\n\n";
 
-            // EC section
-            $description .= "* EC\n";
-            $description .= "** CR/Overlooked: Done/Total: {$request['cr_cms']}\n";
-            $description .= "** Bug: Fixed/Total: {$request['bug_cms']}\n\n";
+            // // EC section
+            // $description .= "* EC\n";
+            // $description .= "** CR/Overlooked: Done/Total: {$request['cr_cms']}\n";
+            // $description .= "** Bug: Fixed/Total: {$request['bug_cms']}\n\n";
 
-            // API section
-            $description .= "* API\n";
-            $description .= "** CR/Overlooked: Done/Total: {$request['cr_api']}\n";
-            $description .= "** Bug: Fixed/Total: {$request['bug_api']}\n\n";
+            // // API section
+            // $description .= "* API\n";
+            // $description .= "** CR/Overlooked: Done/Total: {$request['cr_api']}\n";
+            // $description .= "** Bug: Fixed/Total: {$request['bug_api']}\n\n";
 
             // Today's tasks section
-            $description .= "*2.【本日のタスク】*\n\n";
+            $description = "*1.【本日のタスク】*\n\n";
             $description .= $this->formatTasksTable($data) . "\n\n";
 
             // Notices section
-            $description .= "*3.【連絡事項】*\n\n";
+            $description .= "*2.【連絡事項】*\n\n";
             $description .= "* 「MR Status」列でステータスが「Merged」となっている「Issue」について、正確に対応済みかどうかご確認のほどよろしくお願いします。\n";
             $description .= "\"EC-Admin - UAT - IssuesList - レビュー - Google Sheets\":https://docs.google.com/spreadsheets/d/1ey0D5r4XX3mmtOP5EaHts2M09fcoDj9nKegqkfCne0s/edit?gid=0#gid=0\n";
             $response = $this->client->request('POST', "{$this->apiUrl}/issues.json", [
