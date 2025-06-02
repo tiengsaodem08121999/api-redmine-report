@@ -24,7 +24,7 @@
             'KietNA'  => 'ece23009da9170c5d5edb0c1ef1095db5657f9f4',
             'ThienND' => '81baff340b161e0c9799bfda7268c01afaed772b',
             'NganPVH' => 'cc513ebd6bc00327f89c368199fc8fc928de8a97',
-            'BaoNC'   => 'b39e883aebf737c58ed286f4c2a909d5769f19a9',
+            'BaoNC'   => 'ccfb34b990cdfbe81cf792d20db064123e7bd118',
         ],
         'developer_report' => [
             'VinhDV', 
