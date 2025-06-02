@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('history_daily_logtimes', function (Blueprint $table) {
             $table->id();
+            $table->string('member');
+            $table->string('task_id');
+            $table->string('spent_time');
+            $table->date('date');
             $table->timestamps();
         });
     }

@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\ReportSummary;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
-
+use App\Services\HistoryDailyLogTimeService;
 class RedmineLogController extends Controller
 {
     protected $redmineService;
-
-    public function __construct(RedmineService $redmineService)
+    protected $historyDailyLogTimeService;
+    public function __construct(RedmineService $redmineService, HistoryDailyLogTimeService $historyDailyLogTimeService)
     {
         $this->redmineService = $redmineService;
+        $this->historyDailyLogTimeService = $historyDailyLogTimeService;
     }
 
     public function fetchLogTime()
@@ -57,13 +58,20 @@ class RedmineLogController extends Controller
                 unset($data[$key]);
             }
         }
+
+        $history_daily_logtime = $this->historyDailyLogTimeService->getHistoryDailyLogtime($data);
+        if (isset($history_daily_logtime['error'])) {
+            return redirect()->route('report')->with('error', $history_daily_logtime['message']);
+        }
+        
         $result = $this->redmineService->createDailyReport($data , $request->all());
 
         if (isset($result['error'])) {
             return redirect()->route('report')->with('error', $result['error']);
         }
         return redirect()->route('report')->with('success', 'Báo cáo đã được tạo thành công trên Redmine')
-                ->with('report_id', $result['issue']['id']);            
+                ->with('report_id', $result['issue']['id']);    
+        return back();        
     }
 
     public function LogTime(Request $request)
