@@ -63,7 +63,7 @@ class RedmineLogController extends Controller
         if (isset($history_daily_logtime['error'])) {
             return redirect()->route('report')->with('error', $history_daily_logtime['message']);
         }
-        
+
         $result = $this->redmineService->createDailyReport($data , $request->all());
 
         if (isset($result['error'])) {
@@ -71,7 +71,6 @@ class RedmineLogController extends Controller
         }
         return redirect()->route('report')->with('success', 'Báo cáo đã được tạo thành công trên Redmine')
                 ->with('report_id', $result['issue']['id']);    
-        return back();        
     }
 
     public function LogTime(Request $request)
@@ -141,5 +140,11 @@ class RedmineLogController extends Controller
             return redirect()->route('logtime_for_this_month')->with('error', $data['error'])->with('taskErrors', $data['taskErrors']);
         }
         return redirect()->route('logtime_for_this_month')->with('taskSuccess',  $data['taskSuccess'] )->with('taskErrors', $data['taskErrors']);
+    }
+
+    public function compareLogtime()
+    {
+        $LogtimeMatchReport = $this->redmineService->verifyRedmineLogtimeAgainstReport();
+        return view('compare_logtime', compact('LogtimeMatchReport'));
     }
 }
