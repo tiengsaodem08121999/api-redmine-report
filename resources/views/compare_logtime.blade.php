@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Compare Logtime</h1>
-    @if(isset($LogtimeMatchReport))
+    @if(count($LogtimeMatchReport) > 0)
         @foreach ($LogtimeMatchReport as $date => $members)
             <h2>{{ $date }}</h2>
             @foreach ($members as $member => $errors)
