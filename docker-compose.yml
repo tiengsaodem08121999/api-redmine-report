@@ -1,55 +1,38 @@
+version: '3.8'
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: redmine-api-app
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - ./:/var/www
-    command: >
-      bash -c "chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache &&
-               chmod -R 775 /var/www/storage /var/www/bootstrap/cache &&
-               php artisan serve --host=0.0.0.0 --port=8001"
+    container_name: laravel-app
     ports:
-      - "8001:8001"
-    environment:
-      - APP_NAME=${APP_NAME}
-      - APP_ENV=${APP_ENV}
-      - APP_KEY=${APP_KEY}
-      - APP_DEBUG=${APP_DEBUG}
-      - APP_URL=${APP_URL}
-      - DB_CONNECTION=${DB_CONNECTION}
-      - DB_HOST=db
-      - DB_PORT=${DB_PORT}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
     depends_on:
-      - db
+      - mysql
     networks:
-      - redmine-api-network
+      - laravel
 
-  db:
-    image: mysql:8.0
-    container_name: redmine-api-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
     ports:
       - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: api-app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - redmine-api-network
-
-networks:
-  redmine-api-network:
-    driver: bridge
+      - laravel
 
 volumes:
-  dbdata: 
+  dbdata:
+
+networks:
+  laravel:
+    driver: bridge
