@@ -3,30 +3,35 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: redmine-app
+    container_name: redmine-app-dev
     ports:
-      - "0.0.0.0:8080:80"
+      - "0.0.0.0:8081:80"
     volumes:
       - .:/var/www/html
       - ./.env:/var/www/html/.env
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
+      - DB_HOST=mysql
+      - DB_DATABASE=redmine-api
+      - DB_USERNAME=root
+      - DB_PASSWORD=123456
     depends_on:
       - mysql
     networks:
       - laravel
+    # Enable interactive mode for development
+    stdin_open: true
+    tty: true
 
   mysql:
     image: mysql:8
-    container_name: redmine-db
+    container_name: redmine-db-dev
     ports:
       - "3309:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: api-app
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: redmine-api
     volumes:
       - dbdata:/var/lib/mysql
     networks:
@@ -37,4 +42,4 @@ volumes:
 
 networks:
   laravel:
-    driver: bridge
+    driver: bridge 

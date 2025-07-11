@@ -103,34 +103,4 @@
             </div>
         </div>
     </div>
-
-    {!! '|_. # |_. 開発者 |_. ID タスク |_. ステータス |_. 備考 |<br>' !!}
-    @foreach ($developers as $dev)
-        {!! '| ' . $index2  . ' |'. $splus . $dev .'| ' !!}
-        @foreach ($data as $key =>  $tasks)
-            @if ($key == $dev)
-                @foreach ($tasks as $task)
-                    @php
-                        $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
-                    @endphp
-                    {!! $taskContent  !!}   <br>
-                @endforeach
-            @endif
-        @endforeach
-        {!! '|  ' !!}
-    
-        @foreach ($data as $key =>  $tasks)
-        @if ($key == $dev)
-                @foreach ($tasks as $task)
-                    @php
-                        $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
-                        $taskStatus = $Status == 'Closed' || $Status == 'Resolved' ? '完了' : '進行中';
-                    @endphp
-                    {!! $taskStatus  !!} <br>
-                @endforeach
-            @endif
-        @endforeach
-        {!!'|. |<br>'  !!}
-        @php $index2++; @endphp
-    @endforeach
 @endsection
