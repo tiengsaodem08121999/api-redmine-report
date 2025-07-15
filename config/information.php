@@ -37,7 +37,7 @@
             // 'ThienND',
             'ChuongNPN', 
             // 'BaoNC', 
-            // 'DuyTT', 
-            // 'NganPVH'
+            'DuyTT', 
+            'NganPVH'
         ],
 ];

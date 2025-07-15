@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                @if(session('taskSuccess'))
+                @if (session('taskSuccess'))
                     <div class="col-md-12">
                         <div class="alert alert-success">
                             <h5>Task success: <br>
@@ -19,7 +19,7 @@
                         </div>
                     </div>
                 @endif
-                @if(session('taskErrors'))
+                @if (session('taskErrors'))
                     <div class="alert alert-danger">
                         <h5>Task errors: <br>
                             @foreach (session('taskErrors') as $date => $task)
@@ -32,7 +32,7 @@
                 @endif
             </div>
         </div>
-        <form action="{{ route('execute_logtime_for_this_month') }}" method="post">
+        <form action="{{ route('execute_logtime_for_this_month') }}" id="form-logtime-for-this-month" method="post">
             @csrf
             <div class="row">
                 <div class="col-md-4">
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                 </div>
-               
+
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
@@ -69,12 +69,15 @@
                                         @endphp
                                         <tr>
                                             <td>{{ $date }}</td>
-                                            <td><input type="text" name="{{ $date }}[{{ $index }}][task_id]" class="form-control"
-                                                    placeholder="Enter task"></td>
-                                            <td><input type="text" name="{{ $date }}[{{ $index }}][spent_time]" value="8" class="form-control"
-                                                    placeholder="hours"></td>
-                                            <td>    
-                                                <select name="{{ $date }}[{{ $index }}][activity_id]" class="form-select" required>
+                                            <td><input type="text"
+                                                    name="{{ $date }}[{{ $index }}][task_id]"
+                                                    class="form-control" placeholder="Enter task"></td>
+                                            <td><input type="text"
+                                                    name="{{ $date }}[{{ $index }}][spent_time]"
+                                                    value="8" class="form-control" placeholder="hours"></td>
+                                            <td>
+                                                <select name="{{ $date }}[{{ $index }}][activity_id]"
+                                                    class="form-select" required>
                                                     <option value="15">01_Study</option>
                                                     <option value="8">02_Design</option>
                                                     <option value="10" selected>03_Coding</option>
@@ -91,14 +94,25 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <i class="fa-regular fa-square-plus add_log_time" style="cursor: pointer;"  title="Add new row" data-date="{{ $date }}"></i>
-                                                <i class="fa-regular fa-square-minus remove_log_time text-danger" style="cursor: pointer;" title="Remove this row" data-date="{{ $date }}"></i>
+                                                <i class="fa-regular fa-square-plus add_log_time" style="cursor: pointer;"
+                                                    title="Add new row" data-date="{{ $date }}"></i>
+                                                <i class="fa-regular fa-square-minus remove_log_time text-danger"
+                                                    style="cursor: pointer;" title="Remove this row"
+                                                    data-date="{{ $date }}"></i>
                                             </td>
                                         </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <button type="submit" class="btn btn-primary float-end">Add</button>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="d-flex mt-3 justify-content-end">
+                            @include('components.button', [
+                                'type' => 'submit',
+                                'color' => 'primary',
+                                'text' => 'Add',
+                                'id' => 'btn-add',
+                                'formId' => 'form-logtime-for-this-month',
+                                ])
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,8 +125,8 @@
         $(document).ready(function() {
             $(document).on('click', '.add_log_time', function() {
                 const date = $(this).data('date');
-                var totalInputsByDate = $('input[name^="'+date+'"]').length;
-                var $spentTime = $('input[name^="'+date+'"][name$="[spent_time]"]').last();
+                var totalInputsByDate = $('input[name^="' + date + '"]').length;
+                var $spentTime = $('input[name^="' + date + '"][name$="[spent_time]"]').last();
                 var spentTime = parseFloat($spentTime.val()) || 0;
                 $spentTime.val(spentTime / 2);
                 const newRow = `
@@ -147,9 +161,9 @@
                 $(this).closest('tr').after(newRow);
             });
 
-            $(document).on('click', '.remove_log_time', function () {
+            $(document).on('click', '.remove_log_time', function() {
                 const date = $(this).data('date');
-                var totalInputsByDate = $('input[name^="'+date+'"]').length;
+                var totalInputsByDate = $('input[name^="' + date + '"]').length;
                 console.log(totalInputsByDate);
                 if (totalInputsByDate <= 2) {
                     alert('Cannot remove the last row.');

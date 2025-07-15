@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid">
-        <form action="{{ route('execute_create_task') }}" method="POST">
+        <form action="{{ route('execute_create_task') }}" id="form-create-task" method="POST">
             @csrf
             <table class="table table-hover mb-0" id="taskTable">
                 <thead>
@@ -29,13 +29,13 @@
                             </select>   
                         </td>
                         <td>
-                            <input type="text" name="subject[]" class="form-control" placeholder="Subject">     
+                            <textarea name="subject[]" class="form-control" placeholder="Subject"></textarea>
                         </td>
                         <td>
                             <textarea name="description[]" class="form-control" placeholder="Description"></textarea>
                         </td>
                         <td>
-                            <input type="text" name="sub_task[]" class="form-control" placeholder="Sub task">
+                            <textarea name="sub_task[]" class="form-control" placeholder="Sub task"></textarea>
                         </td>
                         <td>
                             <select name="assignee[]" class="form-select" aria-label="Default select example">
@@ -50,7 +50,15 @@
                     </tr>
                 </tbody>
             </table>
-               <button type="submit" class="btn btn-primary ">Create Task</button>
+            <div class="d-flex mt-3 justify-content-end">
+                @include('components.button', [
+                    'type' => 'submit',
+                    'color' => 'primary',
+                    'text' => 'Create Task',
+                    'id' => 'btn-create-task',
+                    'formId' => 'form-create-task',
+                ])
+            </div>
         </form>
     </div>
 

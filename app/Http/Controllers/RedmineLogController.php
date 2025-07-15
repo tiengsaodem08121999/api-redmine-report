@@ -75,7 +75,8 @@ class RedmineLogController extends Controller
 
     public function LogTime(Request $request)
     {
-       $result = $this->redmineService->logTimeToRedmine($request->all());
+        $result = $this->redmineService->logTimeToRedmine($request->all());
+        
         if (isset($result['error'])) {
             return redirect()->route('report')->with('error', $result['error']);
         }
@@ -135,7 +136,7 @@ class RedmineLogController extends Controller
 
     public function executeLogtimeForThisMonth(Request $request)
     {
-         $data = $this->redmineService->executeLogtimeForThisMonth($request->except('_token'));
+        $data = $this->redmineService->executeLogtimeForThisMonth($request->except('_token'));
         if (isset($data['error'])) {
             return redirect()->route('logtime_for_this_month')->with('error', $data['error'])->with('taskErrors', $data['taskErrors']);
         }

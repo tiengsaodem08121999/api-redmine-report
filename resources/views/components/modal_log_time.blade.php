@@ -1,7 +1,7 @@
 @php
     $developers = config('information.user_for_key');
 @endphp
-<form action="{{route('logtime')}}" method="POST">
+<form action="{{route('logtime')}}" method="POST" id="logTimeModal">
     <div class="modal fade" id="logTimeModal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -52,7 +52,15 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        @include('components.button', [
+                            'type' => 'submit',
+                            'color' => 'primary',
+                            'text' => 'Log Time',
+                            'target' => '',
+                            'id' => 'btn-submit',
+                            'formId' => 'logTimeModal',
+                        ])
+                        {{-- <button type="submit" class="btn btn-primary">Submit</button> --}}
                     </div>
                 </div>
             </div>

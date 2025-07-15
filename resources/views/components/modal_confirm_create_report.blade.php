@@ -86,7 +86,14 @@
                  <div class="modal-footer">
                      @csrf
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary">Save changes</button>
+                     @include('components.button', [
+                        'type' => 'submit',
+                        'color' => 'primary',
+                        'text' => 'Save changes',
+                        'target' => '',
+                        'id' => 'btn-save-changes',
+                        'formId' => 'execute_report',
+                    ])
                  </div>
              </div>
          </div>
