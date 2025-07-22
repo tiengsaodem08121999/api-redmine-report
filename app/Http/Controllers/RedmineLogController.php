@@ -143,9 +143,4 @@ class RedmineLogController extends Controller
         return redirect()->route('logtime_for_this_month')->with('taskSuccess',  $data['taskSuccess'] )->with('taskErrors', $data['taskErrors']);
     }
 
-    public function compareLogtime()
-    {
-        $LogtimeMatchReport = $this->redmineService->verifyRedmineLogtimeAgainstReport();
-        return view('compare_logtime', compact('LogtimeMatchReport'));
-    }
 }
