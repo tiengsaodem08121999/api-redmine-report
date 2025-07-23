@@ -1,6 +1,6 @@
  @if (session('report_id'))
      <div class="alert alert-success alert-dismissible fade show" role="alert">
-         {{ 'https://tools.splus-software.com/redmine/issues/' . session('report_id') }}<br>
+         {{ 'https://redmine.splus-software.com/issues/' . session('report_id') }}<br>
          {{ 'em gui report ngày ' . now()->format('d/m/Y') }}
      </div>
  @endif
