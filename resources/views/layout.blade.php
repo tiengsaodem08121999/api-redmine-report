@@ -50,9 +50,6 @@
                         <a class="nav-link" href="{{ route('create_task') }}" tabindex="-1" aria-disabled="true">Create
                             tasks</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('compare_logtime') }}" tabindex="-1" aria-disabled="true">Logtime Matches Report</a>
-                    </li>
                 </ul>
                 <form action="{{ route('report') }}" method="get" class="d-flex">
                     <input type="date" name="date" value="{{ request()->get('date') ?? date('Y-m-d') }}"
