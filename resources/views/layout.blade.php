@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" />
     <!-- Font Awesome CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @stack('styles')
 </head>
 
@@ -52,7 +53,10 @@
                     </li>
                 </ul>
                 <form action="{{ route('report') }}" method="get" class="d-flex">
-                    <input type="date" name="date" value="{{ request()->get('date') ?? date('Y-m-d') }}"
+                    <input type="text" 
+                        id="dateInput"
+                        name="date" 
+                        value="{{ request()->get('date') ?? date('Y-m-d') }}"
                         class="form-control me-2">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
@@ -65,6 +69,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     @stack('scripts')
 
     <script type="text/javascript">
@@ -89,6 +94,18 @@
                 document.getElementById(formId).submit();
             }
         }
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr("#dateInput", {
+                dateFormat: "Y-m-d",
+                defaultDate: "{{ request()->get('date') ?? date('Y-m-d') }}",
+                disable: [
+                    function(date) {
+                        // disable Thứ 7 (6) và CN (0)
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ]
+            });
+        });
     </script>
 </body>
 

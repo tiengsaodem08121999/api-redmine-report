@@ -64,11 +64,11 @@
                                                                 <input type="hidden" name="id" value="{{ $task['id'] }}">
                                                                 <input type="hidden" name="dev" value="{{ $dev }}">
                                                                 <input type="hidden" name="date" value=" {{request()->date}} ">
+                                                                <div class="mb-1 text-break">
+                                                                    {{ $taskContent }}
+                                                                    <button type="submit" class="btn"> <i class="fa-solid fa-trash trash-action"></i> </button>
+                                                                </div>
                                                             </form>
-                                                            <div class="mb-1 text-break">
-                                                                {{ $taskContent }}
-                                                                <button type="submit" class="btn"> <i class="fa-solid fa-trash trash-action"></i> </button>
-                                                            </div>
                                                         @else
                                                             <div class="mb-1 text-break">
                                                                 {{ $taskContent }}
