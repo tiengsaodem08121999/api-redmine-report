@@ -1,5 +1,19 @@
 @extends('layout')
 
+@push('styles')
+    <style>
+        .trash-action {
+            color: darkred;
+        }
+
+        .trash-action:hover {
+            color: red;
+            transition: color 0.3s ease;
+            font-size: 1.2rem;
+        }
+       
+    </style>
+@endpush
 @section('content')
 <div class="container-fluid">
     @include('components.modal_confirm_create_report')
@@ -43,9 +57,23 @@
                                                     @foreach ($tasks as $task)
                                                         @php
                                                             $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
-
                                                         @endphp
-                                                        <div class="mb-1 text-break">{{ $taskContent }}</div>
+                                                        @if(array_key_exists($dev, config('information.user_for_key')))
+                                                            <form action="{{ route('delete_spent_time') }}" id="form_delete_spent_time" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{ $task['id'] }}">
+                                                                <input type="hidden" name="dev" value="{{ $dev }}">
+                                                                <input type="hidden" name="date" value=" {{request()->date}} ">
+                                                            </form>
+                                                            <div class="mb-1 text-break">
+                                                                {{ $taskContent }}
+                                                                <button type="submit" class="btn"> <i class="fa-solid fa-trash trash-action"></i> </button>
+                                                            </div>
+                                                        @else
+                                                            <div class="mb-1 text-break">
+                                                                {{ $taskContent }}
+                                                            </div>
+                                                        @endif
                                                     @endforeach
                                                 @endif
                                             @endforeach
@@ -104,3 +132,12 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#delete_spent_time').on('click', function(e) {
+                $('#form_delete_spent_time').submit();
+            });
+        });
+    </script>   
+@endpush

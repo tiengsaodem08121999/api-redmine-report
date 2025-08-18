@@ -143,4 +143,23 @@ class RedmineLogController extends Controller
         return redirect()->route('logtime_for_this_month')->with('taskSuccess',  $data['taskSuccess'] )->with('taskErrors', $data['taskErrors']);
     }
 
+    public function deleteSpentTime(Request $request)
+    {
+        $id = $request->input('id');
+        $dev = $request->input('dev');
+        $date = $request->input('date') ?? date('Y-m-d');
+    
+        if (!$id || !$dev) {
+            return redirect()->route('report')->with('error', 'ID hoặc dev không hợp lệ');
+        }
+        $result = $this->redmineService->deleteLogTime((int) $id, $dev);
+        if (isset($result['error'])) {
+            return redirect()->route('report', ['date' => $date])->with('error', $result['error']);
+        }
+        if ($result['status'] !== 204) {
+            return redirect()->route('report', ['date' => $date])->with('error', $result['data']);
+        }
+
+        return redirect()->route('report', ['date' => $date])->with('success', 'Đã xóa spent time thành công');
+    }
 }

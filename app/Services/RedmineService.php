@@ -89,6 +89,7 @@ class RedmineService
             $taskName = $this->fetchTaskDetail($taskId);
             $taskFormatted = $taskName['tracker'] . ' #' . $taskName['id'] . ' :'  . $taskName['subject'] . ' ';
             $groupedTasks[$user][] = [
+                'id' => $entry['id'],
                 'task' => $taskFormatted,
                 'status' => $taskName['status'],
                 'spent_time' => $entry['hours'],
@@ -203,6 +204,7 @@ class RedmineService
     {
         $redmineUrl = $this->apiUrl;
         $apiKey =  $data['key'];
+        $result = [];
 
         $response = Http::withHeaders([
             'X-Redmine-API-Key' => $apiKey,
@@ -214,12 +216,14 @@ class RedmineService
                 'spent_on'    => Carbon::parse($data['date'])->format('Y-m-d'),
                 'activity_id' => $data['activity_id'],
             ]
-        ]);
+        ]); 
 
         if ($response->failed()) {
-            throw new \Exception('Failed to log time to Redmine: ' . $response->body());
+            $result = [
+                'error' => 'Failed to log time on Redmine: ' . $response->body(),
+            ];
+            return $result;
         }
-
         return $response->json();
     }
 
@@ -421,6 +425,35 @@ class RedmineService
                 'taskSuccess' => $taskSuccess, 
                 'taskErrors' => $taskErrors
             ];
+    }
+
+    /**
+     * Xoá logtime theo ID
+     *
+     * @param int $timeEntryId
+     * @param string $user
+     * @return bool
+     */
+    public function deleteLogTime(int $timeEntryId, string $user)
+    {
+        $result = [];
+        $userKey = config('information.user_for_key')[$user] ?? null;
+        if (!$userKey) {
+            $result['error'] = 'Không tìm thấy user key cho ' . $user;
+            return $result;
+        }
+        $url = rtrim($this->apiUrl, '/') . "/time_entries/{$timeEntryId}.json";
+
+        $response = Http::withHeaders([
+            'X-Redmine-API-Key' => $userKey,
+            'Content-Type' => 'application/json',
+        ])->delete($url);
+
+        // Redmine trả về 204 No Content nếu xoá thành công
+        $result = [
+            'status' => $response->status(),
+        ];
+        return $result;
     }
    
 }

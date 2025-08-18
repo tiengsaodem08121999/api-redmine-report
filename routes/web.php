@@ -18,4 +18,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/check_logtime', [RedmineLogController::class, 'checkLogtime'])->name('check_logtime');
     Route::get('/logtime_for_this_month', [RedmineLogController::class, 'logtimeForThisMonth'])->name('logtime_for_this_month');
     Route::post('/execute_logtime_for_this_month', [RedmineLogController::class, 'executeLogtimeForThisMonth'])->name('execute_logtime_for_this_month');
+    Route::post('/delete_spent_time', [RedmineLogController::class, 'deleteSpentTime'])->name('delete_spent_time');
 });
