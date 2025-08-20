@@ -21,16 +21,16 @@
         ],
         'user_for_key' => [
             'QuyLV'   => '9668281025ece297a89a317f3a673fd732ce9805',
-            'DuongNT' => 'cad5eb98b070c1ee75330031c0e34ed4cd412eb1',
             'KietNA'  => 'ece23009da9170c5d5edb0c1ef1095db5657f9f4',
-            'ThienND' => '81baff340b161e0c9799bfda7268c01afaed772b',
+            'DuongNT' => 'cad5eb98b070c1ee75330031c0e34ed4cd412eb1',
             'NganPVH' => 'cc513ebd6bc00327f89c368199fc8fc928de8a97',
+            'HiepNC'  => 'ea3082c4caebd54029c33888f03f6b449b23b570',
+            'ToanKH'  => '3d5be992497340c5e7d199b7e5eee44321c5610a',
+            'ThinhNLP' => '7160417783dff1b4125c45bef63cf179c5b845b7',
+            'ThienND' => '81baff340b161e0c9799bfda7268c01afaed772b',
             'BaoNC'   => 'ccfb34b990cdfbe81cf792d20db064123e7bd118',
             'HoangVH' => '71afbf6eac0317507cfcb36da89d4cf49a735f5a',
             'QuynhDT' => '0305460dc3611efc221f21526b535a6e7e0a4ba1',
-            'ThịnhNLP' => '7160417783dff1b4125c45bef63cf179c5b845b7',
-            'HiepNC'  => 'ea3082c4caebd54029c33888f03f6b449b23b570',
-            'ToanKH'  => '3d5be992497340c5e7d199b7e5eee44321c5610a',
         ],
         'developer_report' => [
             'VinhDV', 
@@ -45,9 +45,9 @@
             'HiepNC',
             'ToanKH',
             'ThinhNLP',
-            'BaoNC',
-            'ThienND',
-            'HoangVH',
-            'QuynhDT'
+            // 'BaoNC',
+            // 'ThienND',
+            // 'HoangVH',
+            // 'QuynhDT'
         ],
 ];

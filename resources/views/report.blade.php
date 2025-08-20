@@ -11,13 +11,12 @@
             transition: color 0.3s ease;
             font-size: 1.2rem;
         }
-       
     </style>
 @endpush
 @section('content')
-<div class="container-fluid">
-    @include('components.modal_confirm_create_report')
-    @include('components.modal_log_time', compact('report_summary'))
+    <div class="container-fluid">
+        @include('components.modal_confirm_create_report')
+        @include('components.modal_log_time', compact('report_summary'))
     </div>
     <!-- Main Content -->
     <div class="row">
@@ -56,17 +55,25 @@
                                                 @if ($key == $dev)
                                                     @foreach ($tasks as $task)
                                                         @php
-                                                            $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
+                                                            $taskContent = is_array($task['task'])
+                                                                ? implode(' | ', $task['task'])
+                                                                : $task['task'];
                                                         @endphp
-                                                        @if(array_key_exists($dev, config('information.user_for_key')))
-                                                            <form action="{{ route('delete_spent_time') }}" id="form_delete_spent_time" method="POST" class="d-inline">
+                                                        @if (array_key_exists($dev, config('information.user_for_key')))
+                                                            <form action="{{ route('delete_spent_time') }}"
+                                                                id="form_delete_spent_time" method="POST" class="d-inline">
                                                                 @csrf
-                                                                <input type="hidden" name="id" value="{{ $task['id'] }}">
-                                                                <input type="hidden" name="dev" value="{{ $dev }}">
-                                                                <input type="hidden" name="date" value=" {{request()->date}} ">
+                                                                <input type="hidden" name="id"
+                                                                    value="{{ $task['id'] }}">
+                                                                <input type="hidden" name="dev"
+                                                                    value="{{ $dev }}">
+                                                                <input type="hidden" name="date"
+                                                                    value=" {{ request()->date }} ">
                                                                 <div class="mb-1 text-break">
                                                                     {{ $taskContent }}
-                                                                    <button type="submit" class="btn"> <i class="fa-solid fa-trash trash-action"></i> </button>
+                                                                    <button type="submit" class="btn"> <i
+                                                                            class="fa-solid fa-trash trash-action"></i>
+                                                                    </button>
                                                                 </div>
                                                             </form>
                                                         @else
@@ -90,7 +97,9 @@
                                                                 'In Progress' => 'primary',
                                                                 'Pending' => 'warning',
                                                             ];
-                                                            $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
+                                                            $Status = is_array($task['status'])
+                                                                ? implode(' | ', $task['status'])
+                                                                : $task['status'];
                                                             $badgeClass = $statusMap[$Status] ?? 'secondary';
                                                         @endphp
                                                         <div class="mb-1">
@@ -111,7 +120,7 @@
                                                             $spent_time += $task['spent_time'];
                                                         @endphp
                                                     @endforeach
-                                                    <span class="badge bg-info">{{$spent_time}} h</span>
+                                                    <span class="badge bg-info">{{ $spent_time }} h</span>
                                                 @endif
                                             @endforeach
                                         </td>
@@ -121,14 +130,45 @@
                             </tbody>
                         </table>
                     </div>
-                </div>  
+                </div>
             </div>
-            <div class="card-footer text-end">    
+            <div class="card-footer text-end">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-{{$isDone ?  'success' : 'danger'}}" data-bs-toggle="modal" data-bs-target="#comfirmCreateReportModal">
+                <button type="button" class="btn btn-{{ $isDone ? 'success' : 'danger' }}" data-bs-toggle="modal"
+                    data-bs-target="#comfirmCreateReportModal">
                     Create Report
                 </button>
             </div>
+
+            {!! '|_. # |_. 開発者 |_. ID タスク |_. ステータス |_. 備考 |<br>' !!}
+            @foreach ($developers as $dev)
+                {!! '| ' . $index2 . ' |' . $splus . $dev . '| ' !!}
+                @foreach ($data as $key => $tasks)
+                    @if ($key == $dev)
+                        @foreach ($tasks as $task)
+                            @php
+                                $taskContent = is_array($task['task']) ? implode(' | ', $task['task']) : $task['task'];
+                            @endphp
+                            {!! $taskContent !!} <br>
+                        @endforeach
+                    @endif
+                @endforeach
+                {!! '|  ' !!}
+
+                @foreach ($data as $key => $tasks)
+                    @if ($key == $dev)
+                        @foreach ($tasks as $task)
+                            @php
+                                $Status = is_array($task['status']) ? implode(' | ', $task['status']) : $task['status'];
+                                $taskStatus = $Status == 'Closed' || $Status == 'Resolved' ? '完了' : '進行中';
+                            @endphp
+                            {!! $taskStatus !!} <br>
+                        @endforeach
+                    @endif
+                @endforeach
+                {!! '|. |<br>' !!}
+                @php $index2++; @endphp
+            @endforeach
         </div>
     </div>
 @endsection
@@ -139,5 +179,5 @@
                 $('#form_delete_spent_time').submit();
             });
         });
-    </script>   
+    </script>
 @endpush
