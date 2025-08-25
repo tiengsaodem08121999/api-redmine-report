@@ -162,4 +162,21 @@ class RedmineLogController extends Controller
 
         return redirect()->route('report', ['date' => $date])->with('success', 'Đã xóa spent time thành công');
     }
+
+    public function PCV()
+    {
+        $data = $this->redmineService->getPCVData();
+        return view('pcv', compact('data'));
+    }
+
+    public function UpdatePCV(Request $request)
+    {
+        $data = $this->redmineService->updatePCVData($request->except('_token'));
+        if( isset($data['warning'])) {
+            return redirect()->route('pcv')->with('warning', $data['warning']);
+        }
+        return redirect()->route('pcv')->with('taskSuccess', $data);
+    }
+
+
 }

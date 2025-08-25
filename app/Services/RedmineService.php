@@ -455,5 +455,115 @@ class RedmineService
         ];
         return $result;
     }
-   
+
+    public function getPCVData()
+    {
+        $statuses = ['New', 'In Progress', 'Resolved', 'Feedback'];
+        $trackers = ['Task', 'Q&A', 'Bug', 'CR', 'Issue', 'Report', 'QA-Task'];
+
+        $response = $this->client->get($this->apiUrl . '/issues.json', [
+            'query' => [
+                'key' => $this->apiKey,
+                'project_id' => $this->project,
+                'status_id' => '*', // lấy tất cả status, rồi lọc thủ công
+                // 'limit' => 100,     // tùy chỉnh số lượng muốn lấy
+            ]
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+        if (!isset($data['issues'])) {
+            return [];
+        }
+
+        $today = Carbon::today();
+        $issues = array_filter($data['issues'], function ($issue) use ($statuses, $trackers, $today) {
+            // dd($issue);
+            $statusOk  = in_array($issue['status']['name'] ?? '', $statuses);
+            $trackerOk = in_array($issue['tracker']['name'] ?? '', $trackers);
+            $statusName = $issue['status']['name'] ?? '';
+            
+            if ($statusName === 'New') {
+                return true;
+            }
+
+            $dateOk = is_null($issue['start_date'] ?? null)
+                    || empty($issue['due_date'] ?? null)
+                    || \Carbon\Carbon::parse($issue['due_date'])->lte($today);
+                    
+
+            return $statusOk && $trackerOk && $dateOk;
+        });
+
+        return array_values($issues);
+    }
+
+    public function updatePCVData()
+    {
+        $data = $this->getPCVData();
+       
+        $idsTask = [];
+        if (empty($data)) {
+            return ['warning' => 'Không có task nào cần cập nhật'];
+        }
+        foreach($data as $issue) {
+            $taskId = $issue['id'];
+
+            if($issue['tracker']['name'] == 'Report')
+            {
+                 $taskData = [
+                    'done_ratio' => 100, // Cập nhật tỷ lệ hoàn thành lên 100%
+                    'status_id' => 5, // Cập nhật status sang "Closed"
+                ];
+                $this->UpdateTask($taskId, $taskData);
+                $idsTask[] = $taskId;
+                continue;
+            }
+
+            $taskData = [
+                'due_date' => Carbon::now()->addDays(5)->format('Y-m-d'), // Cập nhật ngày hết hạn lên 5 ngày
+            ];
+
+            if($issue['status']['name'] = 'New')
+            {
+                $taskData['status_id'] = 2; // Cập nhật status sang "In Progress"
+                $taskData['custom_fields'] =  [
+                    [
+                        'id' => 1,
+                        'value' => Carbon::now()->format('Y-m-d') // Cập nhật ngày bắt đầu
+                    ],
+                ];
+            } 
+
+            if(empty($issue['start_date'])) {
+                $taskData['start_date'] = Carbon::now()->format('Y-m-d'); // Cập nhật ngày bắt đầu nếu chưa có
+            }
+
+            if($issue['done_ratio'] < 10) {
+                $taskData['done_ratio'] = 10; // Cập nhật tỷ lệ hoàn thành lên 10%
+            } else if ($issue['done_ratio'] < 80) {
+                $taskData['done_ratio'] = $issue['done_ratio'] + 10; // Tăng tỷ lệ hoàn thành lên 10% nếu dưới 80%
+            } else {
+                $taskData['done_ratio'] = 90; 
+            }
+
+            $this->UpdateTask($taskId, $taskData);
+            $idsTask[] = $taskId;
+        }
+        return $idsTask;
+    }
+    
+    public function UpdateTask($taskId, $data)
+    {
+        $response = Http::withHeaders([
+            'X-Redmine-API-Key' => $this->apiKey,
+            'Content-Type' => 'application/json',
+        ])->put("{$this->apiUrl}/issues/{$taskId}.json", [
+            'issue' => $data
+        ]);
+
+        if ($response->failed()) {
+            return ['error' => 'Không thể cập nhật task: ' . $response->body()];
+        }
+        return $response->json();
+    }
 }

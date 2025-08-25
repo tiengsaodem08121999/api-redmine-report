@@ -32,7 +32,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Member</th>
-                                    <th>ID Task</th>
+                                    <th class="ms-5">ID Task</th>
                                     <th>Status</th>
                                     <th>Spent Time</th>
                                 </tr>
@@ -70,14 +70,14 @@
                                                                 <input type="hidden" name="date"
                                                                     value=" {{ request()->date }} ">
                                                                 <div class="mb-1 text-break">
-                                                                    {{ $taskContent }}
                                                                     <button type="submit" class="btn"> <i
                                                                             class="fa-solid fa-trash trash-action"></i>
                                                                     </button>
+                                                                    {{ $taskContent }}
                                                                 </div>
                                                             </form>
                                                         @else
-                                                            <div class="mb-1 text-break">
+                                                            <div class="mb-1 text-break ms-5">
                                                                 {{ $taskContent }}
                                                             </div>
                                                         @endif
