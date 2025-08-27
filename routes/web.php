@@ -21,4 +21,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete_spent_time', [RedmineLogController::class, 'deleteSpentTime'])->name('delete_spent_time');
     Route::get('/PCV', [RedmineLogController::class, 'PCV'])->name('pcv');
     Route::post('/Update_PCV', [RedmineLogController::class, 'UpdatePCV'])->name('update_PCV');
+    Route::get('/issue_done', [RedmineLogController::class, 'issueDone'])->name('issue_done');
+    Route::post('/close_issue', [RedmineLogController::class, 'closeIssue'])->name('close_ssue');
 });

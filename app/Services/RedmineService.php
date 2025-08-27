@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\CommonConsts;
 use App\Models\HistoryDailyLogtime;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -565,5 +566,48 @@ class RedmineService
             return ['error' => 'Không thể cập nhật task: ' . $response->body()];
         }
         return $response->json();
+    }
+  
+    public function getDoneIssues()
+    {
+            $response = $this->client->get($this->apiUrl . '/issues.json', [
+                'query' => [
+                    'key' => $this->apiKey,
+                    'project_id' => $this->project,
+                    'limit' => 100, // có thể tăng nếu muốn
+                ]
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+            if (!isset($data['issues'])) {
+                return [];
+            }
+
+            // Danh sách status cần loại trừ
+            $excludedStatuses = [CommonConsts::Status['Pending'], CommonConsts::Status['Canceled'], CommonConsts::Status['Closed']];
+
+            // Lọc các issue có done_ratio = 100 và không thuộc status loại trừ
+            $doneIssues = array_filter($data['issues'], function ($issue) use ($excludedStatuses) {
+                return ($issue['done_ratio'] == 100) && !in_array($issue['status']['id'], $excludedStatuses);
+            });
+
+            return array_values($doneIssues);
+        }
+
+    public function closeIssues(array $issueIds)
+    {
+        foreach ($issueIds['selected_issues'] as $id) {
+            $taskData = [
+                'status_id' => CommonConsts::Status['Closed'], // Cập nhật status sang "Closed"
+                'custom_fields' => [
+                    [
+                        'id' => 1,
+                        'value' => Carbon::now()->format('Y-m-d') // Cập nhật ngày đóng
+                    ]
+                ]
+            ];
+            $this->UpdateTask($id, $taskData);  
+        }
+        return true;    
     }
 }

@@ -178,5 +178,19 @@ class RedmineLogController extends Controller
         return redirect()->route('pcv')->with('taskSuccess', $data);
     }
 
+    public function issueDone(Request $request)
+    {
+        $data = $this->redmineService->getDoneIssues();
+        return view('issue_done', compact('data'));
+    }
+
+    public function closeIssue(Request $request)
+    {
+        $data = $this->redmineService->closeIssues($request->only('selected_issues'));
+        if (isset($data['error'])) {
+            return redirect()->route('issue_done')->with('error', $data['error']);
+        }
+        return redirect()->route('issue_done')->with('success', 'Đã đóng các issue thành công');
+    }
 
 }

@@ -54,6 +54,10 @@
                      <li class="nav-item">
                         <a class="nav-link" href="{{ route('pcv') }}" tabindex="-1" aria-disabled="true">PCV</a>
                     </li>
+                      </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('issue_done') }}" tabindex="-1" aria-disabled="true">Issue Done</a>
+                    </li>
                 </ul>
                 <form action="{{ route('report') }}" method="get" class="d-flex">
                     <input type="text" 
