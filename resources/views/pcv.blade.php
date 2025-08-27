@@ -47,7 +47,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>ID</th>
+                                    <th>Author</th>
                                     <th>Task</th>
                                 </tr>
                             </thead>
@@ -55,8 +55,14 @@
                                 @foreach ($data as $index => $task)
                                     <tr>
                                         <td>{{ $index++ }}</td>
-                                        <td>{{ $task['id'] }}</td>
-                                        <td>{{ $task['tracker']['name'] .' #'. $task['id'].':' . $task['subject'] }}</td>
+                                        <td>{{ $task['author']['name'] }}</td> 
+                                        <td>
+                                            {!! $task['tracker']['name'] !!}
+                                            <a target="_blank" href="https://redmine.splus-software.com/issues/{{ $task['id'] }}">
+                                                 #{{ $task['id'] }}
+                                            </a>
+                                            {!! ': ' . $task['subject'] !!}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
