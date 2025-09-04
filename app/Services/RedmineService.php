@@ -459,39 +459,55 @@ class RedmineService
 
     public function getPCVData()
     {
-        $statuses = ['New', 'In Progress', 'Resolved', 'Feedback'];
-        $trackers = ['Task', 'Q&A', 'Bug', 'CR', 'Issue', 'Report', 'QA-Task'];
+        $statuses = [
+            CommonConsts::Status['New'],
+            CommonConsts::Status['In_Progress'], 
+            CommonConsts::Status['Resolved'], 
+            CommonConsts::Status['Feedback']
+        ];
 
+        $trackers = CommonConsts::Tracker;
         $response = $this->client->get($this->apiUrl . '/issues.json', [
             'query' => [
                 'key' => $this->apiKey,
                 'project_id' => $this->project,
-                'status_id' => '*', // lấy tất cả status, rồi lọc thủ công
-                // 'limit' => 100,     // tùy chỉnh số lượng muốn lấy
+                'limit' => 100,
             ]
         ]);
-
+    
         $data = json_decode($response->getBody()->getContents(), true);
         if (!isset($data['issues'])) {
             return [];
         }
 
-        $today = Carbon::today();
-        $issues = array_filter($data['issues'], function ($issue) use ($statuses, $trackers, $today) {
-            // dd($issue);
-            $statusOk  = in_array($issue['status']['name'] ?? '', $statuses);
-            $trackerOk = in_array($issue['tracker']['name'] ?? '', $trackers);
+        // Lấy danh sách tất cả parent id từ các issue con
+            $parentIds = [];
+            foreach ($data['issues'] as $issue) {
+                if (isset($issue['parent']['id']) && in_array($issue['status']['id'], $statuses)) {
+                    $parentIds[] = $issue['parent']['id'];
+                }
+            }
+        $issues = array_filter($data['issues'], function ($issue) use ($statuses, $trackers, $parentIds) {
+             if($issue['id'] == 185651) {
+                dd($issue);
+            }
+            $statusOk  = in_array($issue['status']['id'] ?? '', $statuses);
+            $trackerOk = in_array($issue['tracker']['id'] ?? '', $trackers);
             $statusName = $issue['status']['name'] ?? '';
+
+            // Loại bỏ task cha nếu id của nó nằm trong danh sách parentIds
+            // if (in_array($issue['id'], $parentIds)) {
+            //     return false;
+            // }
             
             if ($statusName === 'New') {
                 return true;
             }
-
+           
             $dateOk = is_null($issue['start_date'] ?? null)
                     || empty($issue['due_date'] ?? null)
-                    || \Carbon\Carbon::parse($issue['due_date'])->lte($today);
+                    || (strtotime($issue['due_date']) <= strtotime(now()));
                     
-
             return $statusOk && $trackerOk && $dateOk;
         });
 
