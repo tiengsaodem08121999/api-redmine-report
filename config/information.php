@@ -47,8 +47,8 @@
             'ToanKH',
             'ThinhNLP',
             'BaoNC',
-            'ThienND',
-            'HoangVH',
-            'QuynhDT'
+            // 'ThienND',
+            // 'HoangVH',
+            // 'QuynhDT'
         ],
 ];
