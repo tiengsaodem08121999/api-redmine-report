@@ -135,10 +135,10 @@ class RedmineService
             $description = "*1.【本日のタスク】*\n\n";
             $description .= $this->formatTasksTable($data) . "\n\n";
 
-            // Notices section
-            $description .= "*2.【連絡事項】*\n\n";
-            $description .= "* 「MR Status」列でステータスが「Merged」となっている「Issue」について、正確に対応済みかどうかご確認のほどよろしくお願いします。\n";
-            $description .= "\"EC-Admin - UAT - IssuesList - レビュー - Google Sheets\":https://docs.google.com/spreadsheets/d/1ey0D5r4XX3mmtOP5EaHts2M09fcoDj9nKegqkfCne0s/edit?gid=0#gid=0\n";
+            // // Notices section
+            // $description .= "*2.【連絡事項】*\n\n";
+            // $description .= "* 「MR Status」列でステータスが「Merged」となっている「Issue」について、正確に対応済みかどうかご確認のほどよろしくお願いします。\n";
+            // $description .= "\"EC-Admin - UAT - IssuesList - レビュー - Google Sheets\":https://docs.google.com/spreadsheets/d/1ey0D5r4XX3mmtOP5EaHts2M09fcoDj9nKegqkfCne0s/edit?gid=0#gid=0\n";
             $response = $this->client->request('POST', "{$this->apiUrl}/issues.json", [
                 'headers' => [
                     'Content-Type' => 'application/json',
