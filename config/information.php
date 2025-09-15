@@ -44,9 +44,9 @@
             'DuongNT', 
             'NganPVH',
             'HiepNC',
-            'ToanKH',
-            'ThinhNLP',
-            'BaoNC',
+            // 'ToanKH',
+            // 'ThinhNLP',
+            // 'BaoNC',
             // 'ThienND',
             // 'HoangVH',
             // 'QuynhDT'
