@@ -19,7 +19,7 @@
             'Bug' => 1,
             'CR' => 4,
         ],
-        'user_for_key' => [
+        'user_for_key' => [ 
             'DuyTT'   => 'd907216f0dcf2ef54f7ee4b5e950c5c8bb35b171',
             'QuyLV'   => 'c8b8b032bbcd19995fe294d1f193c9b7f66a8aaa',
             'KietNA'  => 'ece23009da9170c5d5edb0c1ef1095db5657f9f4',
@@ -36,7 +36,7 @@
         'developer_report' => [
             'VinhDV', 
             'PhuDT', 
-            // 'YenNH',
+            'YenNH',
             // 'ChuongNPN', 
             // 'DuyTT', 
             'QuyLV', 

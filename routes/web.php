@@ -9,7 +9,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->group(function () {
+// Route::middleware(['auth'])->group(function () {
     Route::get('/', [RedmineLogController::class, 'fetchLogTime'])->name('report');
     Route::post('/executeReport', [RedmineLogController::class, 'executeReport'])->name('executeReport');
     Route::post('/logtime', [RedmineLogController::class, 'LogTime'])->name('logtime');
@@ -23,4 +23,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/Update_PCV', [RedmineLogController::class, 'UpdatePCV'])->name('update_PCV');
     Route::get('/issue_done', [RedmineLogController::class, 'issueDone'])->name('issue_done');
     Route::post('/close_issue', [RedmineLogController::class, 'closeIssue'])->name('close_ssue');
-});
+// });
