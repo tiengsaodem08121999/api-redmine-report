@@ -22,7 +22,7 @@ class RedmineService
         $this->client = new Client();
         $this->apiUrl = 'https://redmine.splus-software.com';
         $this->apiKey = 'c8b8b032bbcd19995fe294d1f193c9b7f66a8aaa';
-        $this->project = 'kass';
+        $this->project = 's7-ec-cube';
     }
 
     /**
