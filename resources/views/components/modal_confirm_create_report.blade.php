@@ -1,3 +1,4 @@
+ @props(['project_name'])
  @if (session('report_id'))
      <div class="alert alert-success alert-dismissible fade show" role="alert">
          {{ 'https://redmine.splus-software.com/issues/' . session('report_id') }}<br>
@@ -9,6 +10,7 @@
          <div class="modal-dialog">
              <div class="modal-content">
                  <div class="modal-header">
+                    <input type="hidden" name="project_name" value="{{ $project_name }}">
                      <h1 class="modal-title fs-5" id="modal2Label">Comfirm Create Report {{ now()->format('d/m/Y') }}
                      </h1>
                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

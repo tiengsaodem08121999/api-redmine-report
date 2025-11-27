@@ -15,14 +15,12 @@ class RedmineService
     protected $client;
     protected $apiUrl;
     protected $apiKey;
-    protected $project;
 
     public function __construct()
     {
         $this->client = new Client();
         $this->apiUrl = 'https://redmine.splus-software.com';
         $this->apiKey = 'c8b8b032bbcd19995fe294d1f193c9b7f66a8aaa';
-        $this->project = 's7-ec-cube';
     }
 
     /**
@@ -106,7 +104,7 @@ class RedmineService
         return $data;
     }
 
-    public function createDailyReport($data, $request)
+    public function createDailyReport($data, $project_name)
     {
         try {
             $today = date('Y-m-d');
@@ -146,7 +144,7 @@ class RedmineService
                 ],
                 'json' => [
                     'issue' => [
-                        'project_id' => $this->project,
+                        'project_id' => $project_name,
                         'subject' => $subject,
                         'status_id' => 1, // New status
                         'tracker_id' => 8, // Report
@@ -228,7 +226,7 @@ class RedmineService
         return $response->json();
     }
 
-    public function createTasks(array $data)
+    public function createTasks(array $data, $project_name)
     {
         $redmineUrl = $this->apiUrl;
         $apiKey = $this->apiKey;
@@ -243,7 +241,7 @@ class RedmineService
                 'Content-Type' => 'application/json',
             ])->post("$redmineUrl/issues.json", [
                 'issue' => [
-                    'project_id' => $this->project,
+                    'project_id' => $project_name,
                     'subject' => $task['subject'],
                     'tracker_id' => $task['tracker'],
                     'description' => $task['description'],
@@ -272,7 +270,7 @@ class RedmineService
             if (is_numeric($task['sub_task'])) {
                 $subtask_id = $task['sub_task'];
             } else {
-                $subtask_id = $this->getTaskforSubject($task['sub_task']);
+                $subtask_id = $this->getTaskforSubject($task['sub_task'], $project_name);
             }
 
             $response = Http::withHeaders([
@@ -280,7 +278,7 @@ class RedmineService
                 'Content-Type' => 'application/json',
             ])->post("$redmineUrl/issues.json", [
                 'issue' => [
-                    'project_id' => $this->project,
+                    'project_id' => $project_name,
                     'subject' => $task['subject'],
                     'tracker_id' => $task['tracker'],
                     'description' => $task['description'],
@@ -305,13 +303,13 @@ class RedmineService
         return $response->json();
     }
 
-    public function getTaskforSubject($subject)
+    public function getTaskforSubject($subject, $project_name)
     {
 
         $response = Http::withHeaders([
             'X-Redmine-API-Key' => $this->apiKey,
         ])->get("$this->apiUrl/issues.json", [
-            'project_id' => $this->project,
+            'project_id' => $project_name,
             'subject' => $subject,
         ]);
         $subject = $response->json()['issues'][0]['subject'];
@@ -330,10 +328,10 @@ class RedmineService
         return $response->json();
     }
 
-    public function checkLogtimeForThisMonth()
+    public function checkLogtimeForThisMonth($project_name)
     {
         $developerNames = array_flip(config('information.developer_report'));
-        $logtimesByDate = $this->getLogtimeForThisMonth();
+        $logtimesByDate = $this->getLogtimeForThisMonth($project_name);
         $totalLogTime = [];
 
         foreach ($logtimesByDate as $logtimes) {
@@ -350,7 +348,7 @@ class RedmineService
         return $totalLogTime;
     }
 
-    public function getLogtimeForThisMonth(): array
+    public function getLogtimeForThisMonth($project_name): array
     {
         $logtimeByDate = [];
 
@@ -359,7 +357,7 @@ class RedmineService
                 'X-Redmine-API-Key' => $this->apiKey,
             ])->get("{$this->apiUrl}/time_entries.json", [
                 'spent_on'   => $date,
-                'project_id' => $this->project,
+                'project_id' => $project_name,
             ]);
 
             $logtimeByDate[$date] = $response->json()['time_entries'] ?? [];
@@ -457,7 +455,7 @@ class RedmineService
         return $result;
     }
 
-    public function getPCVData()
+    public function getPCVData($project_name)
     {
         $statuses = [
             CommonConsts::Status['New'],
@@ -470,7 +468,7 @@ class RedmineService
         $response = $this->client->get($this->apiUrl . '/issues.json', [
             'query' => [
                 'key' => $this->apiKey,
-                'project_id' => $this->project,
+                'project_id' => $project_name,
                 'limit' => 100,
             ]
         ]);
@@ -514,9 +512,9 @@ class RedmineService
         return array_values($issues);
     }
 
-    public function updatePCVData()
+    public function updatePCVData($project_name)
     {
-        $data = $this->getPCVData();
+        $data = $this->getPCVData($project_name);
        
         $idsTask = [];
         if (empty($data)) {
@@ -584,12 +582,12 @@ class RedmineService
         return $response->json();
     }
   
-    public function getDoneIssues()
+    public function getDoneIssues( $project_name )
     {
             $response = $this->client->get($this->apiUrl . '/issues.json', [
                 'query' => [
                     'key' => $this->apiKey,
-                    'project_id' => $this->project,
+                    'project_id' => $project_name,
                     'limit' => 100, // có thể tăng nếu muốn
                 ]
             ]);

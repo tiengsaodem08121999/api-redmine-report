@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\ReportSummary;
 use Illuminate\Http\Request;
 use App\Services\RedmineService;
-use App\Services\HistoryDailyLogTimeService;
 class RedmineLogController extends Controller
 {
     protected $redmineService;
-    protected $historyDailyLogTimeService;
-    public function __construct(RedmineService $redmineService, HistoryDailyLogTimeService $historyDailyLogTimeService)
+    public function __construct(RedmineService $redmineService)
     {
         $this->redmineService = $redmineService;
-        $this->historyDailyLogTimeService = $historyDailyLogTimeService;
     }
 
     public function fetchLogTime()
@@ -37,13 +34,7 @@ class RedmineLogController extends Controller
 
     public function executeReport(Request $request)
     {
-        // $report_summary = ReportSummary::first();
-        // if (!$report_summary) {
-        //     $report_summary =  ReportSummary::create($request->except('_token'));
-        // } else {
-        //     $report_summary->update($request->except('_token'));
-        // }
-
+        $project_name = $request->get('project_name') ?? '';
         $today = date('Y-m-d');
         $data = $this->redmineService->getUserTasks($today);
 
@@ -58,13 +49,8 @@ class RedmineLogController extends Controller
                 unset($data[$key]);
             }
         }
-
-        $history_daily_logtime = $this->historyDailyLogTimeService->getHistoryDailyLogtime($data);
-        if (isset($history_daily_logtime['error'])) {
-            return redirect()->route('report')->with('error', $history_daily_logtime['message']);
-        }
-
-        $result = $this->redmineService->createDailyReport($data , $request->all());
+        dd($data);
+        $result = $this->redmineService->createDailyReport($data , $project_name);
 
         if (isset($result['error'])) {
             return redirect()->route('report')->with('error', $result['error']);
@@ -91,7 +77,8 @@ class RedmineLogController extends Controller
     public function executeCreateTask(Request $request) 
     {
         $data = $this->formatDataCreateTask($request->all());
-        $result = $this->redmineService->createTasks($data);
+        $project_name = $request->get('project_name') ?? '';
+        $result = $this->redmineService->createTasks($data, $project_name);
         if (isset($result['error'])) {
             return redirect()->route('create_task')->with('error', $result['error']);
         }
@@ -122,9 +109,10 @@ class RedmineLogController extends Controller
         return $tasks;
     }
 
-    public function checkLogtime()
+    public function checkLogtime(Request $request)
     {
-        $data = $this->redmineService->checkLogtimeForThisMonth();
+        $project_name = $request->get('project_name') ?? '';
+        $data = $this->redmineService->checkLogtimeForThisMonth($project_name);
         return view('check_logtime', compact('data'));
     }
 
@@ -163,9 +151,10 @@ class RedmineLogController extends Controller
         return redirect()->route('report', ['date' => $date])->with('success', 'Đã xóa spent time thành công');
     }
 
-    public function PCV()
+    public function PCV(Request $request)
     {
-        $data = $this->redmineService->getPCVData();
+        $project_name = $request->get('project_name') ?? '';
+        $data = $this->redmineService->getPCVData($project_name);
         return view('pcv', compact('data'));
     }
 
@@ -180,7 +169,8 @@ class RedmineLogController extends Controller
 
     public function issueDone(Request $request)
     {
-        $data = $this->redmineService->getDoneIssues();
+        $project_name = $request->get('project_name') ?? '';
+        $data = $this->redmineService->getDoneIssues($project_name);
         return view('issue_done', compact('data'));
     }
 

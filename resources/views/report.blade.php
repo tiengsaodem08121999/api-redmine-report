@@ -14,12 +14,28 @@
     </style>
 @endpush
 @section('content')
+@php
+    $index1 = 1;
+    $index2 = 1;
+    $splus = 'Splus.';
+    $project_name = config('information.developers_for_projects');
+    $developers = $project_name[request()->project_name] ?? [];
+    $isDone = true;
+@endphp
     <div class="container-fluid">
-        @include('components.modal_confirm_create_report')
+        @include('components.modal_confirm_create_report', ['project_name' => request()->project_name])
         @include('components.modal_log_time', compact('report_summary'))
     </div>
     <!-- Main Content -->
     <div class="row">
+        <div class="col-md-6  mb-3 mt-3">
+            <select name="project_name" id="project_name" class="form-select">
+                <option value="">Select Project</option>
+                @foreach ($project_name as $project => $developer)
+                    <option value="{{ $project }}" {{ request()->project_name == $project ? 'selected' : '' }}>{{ $project }}</option>
+                @endforeach
+            </select>
+        </div>
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-light">
@@ -38,14 +54,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $index1 = 1;
-                                    $index2 = 1;
-                                    $splus = 'Splus.';
-                                    $developers = config('information.developer_report');
-                                    $isDone = true;
-                                @endphp
-
                                 @foreach ($developers as $dev)
                                     <tr>
                                         <td>{{ $index1 }}</td>
@@ -177,6 +185,10 @@
         $(document).ready(function() {
             $('#delete_spent_time').on('click', function(e) {
                 $('#form_delete_spent_time').submit();
+            });
+            $('#project_name').on('change', function() {
+                const project_name = $(this).val();
+                window.location.href = "{{ route('report') }}?project_name=" + project_name;
             });
         });
     </script>

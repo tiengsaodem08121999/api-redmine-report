@@ -35,19 +35,20 @@
             'NhanTCH' => 'e34d101af43cfccd2d742ef28cc59c13810710d3',
             'TranHTB' => '092d1f5ca87a44a5c5ecf954f4a14390f4307f65',
         ],
-        'developer_report' => [
-            //// KASS
-            // 'VinhDV', 
-            // 'PhuDT', 
-            // 'YenNH',
-            // 'QuyLV', 
-            // 'KietNA', 
-            // 'NhanTCH',
-
-            //// S7-EC-CUBE
-            'DuongNT',
-            'ChuongNPN',
-            'QuynhDT',
-            'TranHTB', 
+        'developers_for_projects' => [
+            'kass' => [
+                'VinhDV', 
+                'PhuDT', 
+                'YenNH',
+                'QuyLV', 
+                'KietNA', 
+                'NhanTCH',
+            ],
+            's7-ec-cube' => [
+                'DuongNT',
+                'ChuongNPN',
+                'QuynhDT',
+                'TranHTB',
+            ],
         ],
 ];
